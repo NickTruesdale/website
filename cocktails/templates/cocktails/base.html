@@ -4,23 +4,46 @@
 <html lang="en">
     <head>
         <meta charset="UTF-8">
-        <title>Cocktails</title>
+        <meta name="viewport" content="width=device-width, initial-scale=1">
 
-        <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css" >
-        <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap-theme.min.css" >
-        <link rel="stylesheet" href="{% static 'css/coctails.css' %}" >
+        <title>One Last Word</title>
+
+        <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css">
+        <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap-theme.min.css">
+        <link rel="stylesheet" href="{% static 'css/cocktails.css' %}">
+
+        <link href="https://fonts.googleapis.com/css?family=Roboto" rel="stylesheet" type="text/css">
+        <link href="https://fonts.googleapis.com/css?family=Oswald:400,700" rel="stylesheet" type="text/css">
+
+        <script src="https://use.fontawesome.com/8d39786910.js"></script>
     </head>
     <body>
         <div class="page-header">
-            <h1>Cocktails!</h1>
+            <div class="page-title">
+                <a href="/">
+                    <div>
+                        <h3>Not Just</h3>
+                        <h2>One</h2>
+                    </div>
+                    <div>   
+                        <h1>Last Word</h1>
+                    </div>
+                    <div>   
+                        <span class="glyphicon glyphicon-glass" style="opacity: 1"></span>
+                        <span class="glyphicon glyphicon-glass" style="opacity: 0.6"></span>
+                        <span class="glyphicon glyphicon-glass" style="opacity: 0.1"></span>
+                    </div>
+                </a>
+            </div>
+            <div>
+                <h3>A blog for cocktail enthusiasts and addicts</h3>
+            </div>
         </div>
 
-        <div class="content container" >
-            <div class="row" >
-                <div class="col-md-8" >
-                {% block content %}
-                {% endblock %}
-                </div>
+        <div class="container content" >
+            <div class="col-md-12 col-centered" >
+            {% block content %}
+            {% endblock %}
             </div>
         </div>
     </body>

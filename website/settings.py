@@ -39,6 +39,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'django_countries',
     'djfractions',
+    'currencies',
     'localflavor',
     'cocktails',
 ]
@@ -70,6 +71,7 @@ TEMPLATES = [
         },
     },
 ]
+
 
 WSGI_APPLICATION = 'website.wsgi.application'
 

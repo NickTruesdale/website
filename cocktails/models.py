@@ -27,21 +27,60 @@ NAME_LENGTH_LONG = 60
 URL_LENGTH = 300
 
 
-#
-#
-#
+# ------------
+# Base Objects
+# ------------
 class BaseObjectWithImage(models.Model):
     ''' Base class that most of the tables share '''
     name = models.CharField(max_length=NAME_LENGTH_LONG)
     description = models.TextField(default='', blank=True)
 
-    image_url = models.URLField(max_length=URL_LENGTH, null=True, blank=True)
+    image_url = models.URLField(
+        max_length=URL_LENGTH,
+        verbose_name='Image URL',
+        null=True,
+        blank=True
+    )
+
+    own_url = models.URLField(
+        max_length=URL_LENGTH,
+        verbose_name='Own URL',
+        null=True,
+        blank=True
+    )
+
+    wiki_url = models.URLField(
+        max_length=URL_LENGTH,
+        verbose_name='Wikipedia URL',
+        null=True,
+        blank=True
+    )
 
     class Meta:
         abstract = True
 
     def __str__(self):
         return self.name
+
+
+class BaseObjectAmazon(models.Model):
+    ''' Many objects will be purchaseable from Amazon or another site '''
+    amazon_url_us = models.URLField(
+        max_length=URL_LENGTH,
+        verbose_name='Amazon US URL',
+        null=True,
+        blank=True
+    )
+
+    amazon_url_uk = models.URLField(
+        max_length=URL_LENGTH,
+        verbose_name='Amazon UK URL',
+        null=True,
+        blank=True
+    )
+
+    class Meta:
+        abstract = True
 
 
 # ----------------
@@ -66,78 +105,49 @@ class Glassware(BaseObjectWithImage):
     class Meta:
         verbose_name_plural = 'glassware'
 
-class Tool(BaseObjectWithImage):
+
+class Tool(BaseObjectWithImage, BaseObjectAmazon):
     ''' Cocktail hardware (i.e. shakers, spoons, jiggers, etc.) '''
     # What else do we need here besides the description?
     # Brand? Material? Volume?
 
 
-class PreparationMethod(models.Model):
+class PreparationMethod(BaseObjectWithImage):
     ''' Methods that are used to make cocktails '''
-    name = models.CharField(max_length=NAME_LENGTH_SHORT)
-    description = models.TextField()
 
 
-class Manufacturer(models.Model):
+class Manufacturer(BaseObjectWithImage):
     ''' Manufaturer of spirits, hardware and other products '''
-    name = models.CharField(max_length=NAME_LENGTH_MED)
-    description = models.TextField(default='', blank=True)
 
     # Location
     country = CountryField()
     us_state = USStateField(choices=STATE_CHOICES, verbose_name='state', null=True, blank=True)
     city = models.CharField(max_length=NAME_LENGTH_LONG, null=True, blank=True)
 
-    # Website links
-    own_url = models.URLField(
-        max_length=URL_LENGTH,
-        verbose_name = 'Manufacturer URL',
-        null=True,
-        blank=True
-    )
-    wiki_url = models.URLField(
-        max_length=URL_LENGTH,
-        verbose_name = 'Wikipedia URL',
-        null=True,
-        blank=True
-    )
-
     def __str__(self):
         return self.name
 
 
-class Distillery(models.Model):
+class Distillery(BaseObjectWithImage):
     ''' Location where a spirit is distilled. This is often different than
         the manufacturer since many brands have been bought or have parent
         companies.
     '''
-    name = models.CharField(max_length=NAME_LENGTH_MED)
-    description = models.TextField(default='', blank=True)
 
     # Location
     country = CountryField()
     us_state = USStateField(choices=STATE_CHOICES, null=True, blank=True)
     city = models.CharField(max_length=NAME_LENGTH_LONG, null=True, blank=True)
 
-    # Website links
-    wiki_url = models.URLField(
-        max_length=URL_LENGTH,
-        verbose_name = 'Wikipedia URL',
-        null=True,
-        blank=True
-    )
-
     class Meta:
-        verbose_name_plural: 'distilleries'
+        verbose_name_plural = 'distilleries'
 
     def __str__(self):
         return self.name
 
 
-class CocktailCategory(models.Model):
+class CocktailCategory(BaseObjectWithImage):
     ''' Types of cocktails (Flip, fizz, julep, punch, etc.) '''
-    name = models.CharField(max_length=40)
-    description = models.TextField()
 
     # How is this drink traditionally composed?
     method = models.ForeignKey(PreparationMethod, related_name='categories', null=True, on_delete=models.SET_NULL)
@@ -146,12 +156,10 @@ class CocktailCategory(models.Model):
         verbose_name_plural = 'cocktail categories'
 
 
-class IngredientClass(models.Model):
+class IngredientClass(BaseObjectWithImage):
     ''' Umbrella for major ingredient types. Mostly used for sorting
         and differentiating spirits, liqueurs and non-alcoholic ingredients.
     '''
-    name = models.CharField(max_length=NAME_LENGTH_SHORT)
-    description = models.TextField()
 
     class Meta:
         verbose_name_plural = 'ingredient classes'
@@ -162,32 +170,28 @@ class IngredientClass(models.Model):
 
 class IngredientCategory(BaseObjectWithImage):
     ''' Major category for ingredients '''
-    name = models.CharField(max_length=NAME_LENGTH_SHORT)
-    description = models.TextField()
 
     # Link to parent class
     ingredient_class = models.ForeignKey(IngredientClass, related_name='categories', on_delete=models.CASCADE)
 
     class Meta:
-        verbose_name_plural: 'ingredient categories'
+        verbose_name_plural = 'ingredient categories'
 
 
 class IngredientSubcategory(BaseObjectWithImage):
     ''' Sub-category for ingredients (subset of a category) '''
-    name = models.CharField(max_length=NAME_LENGTH_SHORT)
-    description = models.TextField()
 
     # Link to parent category
     category = models.ForeignKey(IngredientCategory, related_name='subcategories', on_delete=models.CASCADE)
 
     class Meta:
-        verbose_name_plural: 'ingredient subcategories'
+        verbose_name_plural = 'ingredient subcategories'
 
 
 # -----------
 # MAIN TABLES
 # -----------
-class Ingredient(BaseObjectWithImage):
+class Ingredient(BaseObjectWithImage, BaseObjectAmazon):
     '''
     A single cocktail ingredient, which includes spirits, liqueurs, juices, sweeteners, garnishes, etc.
     '''
@@ -208,14 +212,8 @@ class Ingredient(BaseObjectWithImage):
     )
 
     # Bottle information
-    average_cost = models.DecimalField(
-        decimal_places=2,
-        max_digits=7,
-        validators=[MinValueValidator(Decimal('0.00'))]
-    )
-
     abv = models.DecimalField(
-        decimal_places=2,
+        decimal_places=1,
         max_digits=5,
         validators=[MinValueValidator(Decimal('0.00')), MaxValueValidator(Decimal('100.00'))],
         null=True,
@@ -243,7 +241,7 @@ class Cocktail(BaseObjectWithImage):
     category = models.ForeignKey(CocktailCategory, related_name='cocktails', null=True, on_delete=models.SET_NULL)
 
     # Base spirit is pulled from the ingredients table
-    # base_spirit = models.ForeignKey(Ingredient, )
+    base_spirit = models.ForeignKey(Ingredient, related_name='cocktails', null=True, on_delete=models.SET_NULL)
 
 
 class Recipe(BaseObjectWithImage):

@@ -2,16 +2,16 @@
 
 {% block content %}
     <div class="row">
-        <div class="ingredient-title">
-            <h1>{{ ingredient.name }}</h1><hr>
+        <div class="recipe-title">
+            <h1>{{ recipe.name }}</h1><hr>
         </div>
     </div>
 
-    <div class="ingredient-image col-xs-6 col-md-4">
-        <img src="{{ ingredient.image_url }}" alt="" class="img-responsive">
+    <div class="recipe-image col-xs-6 col-md-4">
+        <img src="{{ recipe.image_url }}" alt="" class="img-responsive">
     </div>
     
-    <div class="ingredient-details col-xs-6 col-md-4">      
+    <div class="recipe-details col-xs-6 col-md-4">      
         <div class="row">
             <div class="card">
                 <h2>Classification</h2>
@@ -32,7 +32,7 @@
         </div>
     </div>
         
-    <div class="ingredient-details col-xs-6 col-md-4">
+    <div class="recipe-details col-xs-6 col-md-4">
         <div class="row">
             <div class="card">
                 <h2>Origin</h2>
