@@ -15,7 +15,19 @@
         <link href="https://fonts.googleapis.com/css?family=Roboto" rel="stylesheet" type="text/css">
         <link href="https://fonts.googleapis.com/css?family=Oswald:400,700" rel="stylesheet" type="text/css">
 
+        
+        <script type="text/javascript" src="{% static 'admin/js/vendor/jquery/jquery.js' %}"></script>  
+        <script type="text/javascript" src="{% static 'admin/js/jquery.init.js' %}"></script>
+        
         <script src="https://use.fontawesome.com/8d39786910.js"></script>
+        <script src="https://npmcdn.com/tether@1.3.3/dist/js/tether.min.js"></script>
+        
+        <!--
+        <script src="{% static 'js/jquery-3.1.1.min.js' %}"></script>
+        <script src="{% static 'js/bootstrap.min.js' %}"></script> -->
+
+        {% block head %}
+        {% endblock %}
     </head>
     <body>
         <div class="page-header">

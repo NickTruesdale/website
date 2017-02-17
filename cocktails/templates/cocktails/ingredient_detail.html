@@ -3,7 +3,11 @@
 {% block content %}
     <div class="row">
         <div class="ingredient-title">
-            <h1>{{ ingredient.name }}</h1><hr>
+            <h1>{{ ingredient.name }}</h1>
+            <a class="btn btn-default" href="{% url 'ingredient_edit' pk=ingredient.pk %}">
+                <span class="glyphicon glyphicon-pencil"></span>
+            </a>
+            <hr>
         </div>
     </div>
 

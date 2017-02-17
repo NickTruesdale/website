@@ -32,19 +32,12 @@ URL_LENGTH = 300
 # ------------
 class BaseObjectWithImage(models.Model):
     ''' Base class that most of the tables share '''
-    name = models.CharField(max_length=NAME_LENGTH_LONG)
+    name = models.CharField(max_length=NAME_LENGTH_LONG, unique=True)
     description = models.TextField(default='', blank=True)
 
     image_url = models.URLField(
         max_length=URL_LENGTH,
         verbose_name='Image URL',
-        null=True,
-        blank=True
-    )
-
-    own_url = models.URLField(
-        max_length=URL_LENGTH,
-        verbose_name='Own URL',
         null=True,
         blank=True
     )
@@ -88,8 +81,8 @@ class BaseObjectAmazon(models.Model):
 # ----------------
 class UnitOfMeasure(models.Model):
     ''' Units used to measure ingredients in a recipe or glass '''
-    name = models.CharField(max_length=NAME_LENGTH_SHORT)
-    plural = models.CharField(max_length=NAME_LENGTH_SHORT)
+    name = models.CharField(max_length=NAME_LENGTH_SHORT, unique=True)
+    plural = models.CharField(max_length=NAME_LENGTH_SHORT, unique=True)
 
     class Meta:
         verbose_name_plural = 'units of measure'
@@ -124,6 +117,14 @@ class Manufacturer(BaseObjectWithImage):
     us_state = USStateField(choices=STATE_CHOICES, verbose_name='state', null=True, blank=True)
     city = models.CharField(max_length=NAME_LENGTH_LONG, null=True, blank=True)
 
+    # Manufacturer's Website
+    own_url = models.URLField(
+        max_length=URL_LENGTH,
+        verbose_name='Own URL',
+        null=True,
+        blank=True
+    )
+
     def __str__(self):
         return self.name
 
@@ -138,6 +139,14 @@ class Distillery(BaseObjectWithImage):
     country = CountryField()
     us_state = USStateField(choices=STATE_CHOICES, null=True, blank=True)
     city = models.CharField(max_length=NAME_LENGTH_LONG, null=True, blank=True)
+
+    # Distillery's Website
+    own_url = models.URLField(
+        max_length=URL_LENGTH,
+        verbose_name='Own URL',
+        null=True,
+        blank=True
+    )
 
     class Meta:
         verbose_name_plural = 'distilleries'
@@ -218,6 +227,14 @@ class Ingredient(BaseObjectWithImage, BaseObjectAmazon):
         validators=[MinValueValidator(Decimal('0.00')), MaxValueValidator(Decimal('100.00'))],
         null=True,
         blank=True,
+    )
+
+    # Ingredient's website
+    own_url = models.URLField(
+        max_length=URL_LENGTH,
+        verbose_name='Own URL',
+        null=True,
+        blank=True
     )
 
     # Ingredients can be classed under each other

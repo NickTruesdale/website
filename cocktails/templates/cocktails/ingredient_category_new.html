@@ -4,20 +4,21 @@
     {{ form.media }}
     <script type="text/javascript" src="{% url 'admin:jsi18n' %}" ></script>
 {% endblock head %}
+
 {% block content %}
-     <div class="row">
+    <div class="row">
         <div class="ingredient-title">
-            <h1>New Ingredient</h1><hr>
+            <h1>New Ingredient Category</h1><hr>
         </div>
     </div>
 
     <div class="col-xs-12 col-md-8 col-md-offset-2">
         <div class="row ingredient-form">
             <form method="POST">{% csrf_token %}
-                
-
-
                 {{ form.as_p }}
+                {% if popup %}
+                    <input type="hidden" name="_popup" value="1">
+                {% endif %}
                 <button type="submit" class="save btn btn-default">Save</button>
             </form>
         </div>
