@@ -116,3 +116,7 @@ body {
 .save {
     float: right;
 }
+
+.add-another {
+    margin: 4px;
+}

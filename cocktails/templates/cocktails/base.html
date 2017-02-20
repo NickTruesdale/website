@@ -30,33 +30,8 @@
         {% endblock %}
     </head>
     <body>
-        <div class="page-header">
-            <div class="page-title">
-                <a href="/">
-                    <div>
-                        <h3>Not Just</h3>
-                        <h2>One</h2>
-                    </div>
-                    <div>   
-                        <h1>Last Word</h1>
-                    </div>
-                    <div>   
-                        <span class="glyphicon glyphicon-glass" style="opacity: 1"></span>
-                        <span class="glyphicon glyphicon-glass" style="opacity: 0.6"></span>
-                        <span class="glyphicon glyphicon-glass" style="opacity: 0.1"></span>
-                    </div>
-                </a>
-            </div>
-            <div>
-                <h3>A blog for cocktail enthusiasts and addicts</h3>
-            </div>
-        </div>
-
-        <div class="container content" >
-            <div class="col-md-12 col-centered" >
-            {% block content %}
-            {% endblock %}
-            </div>
-        </div>
+        {% block basecontent %}
+            
+        {% endblock basecontent %}
     </body>
 </html>

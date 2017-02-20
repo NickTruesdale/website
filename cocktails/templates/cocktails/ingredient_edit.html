@@ -1,4 +1,4 @@
-{% extends "cocktails/base.html" %}
+{% extends "cocktails/base_title.html" %}
 
 {% block head %}
     {{ form.media }}
@@ -14,7 +14,7 @@
     <div class="col-xs-12 col-md-8 col-md-offset-2">
         <div class="row ingredient-form">
             <form method="POST">{% csrf_token %}
-                
+
 
 
                 {{ form.as_p }}

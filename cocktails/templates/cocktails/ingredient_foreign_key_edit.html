@@ -1,14 +1,15 @@
 {% extends "cocktails/base.html" %}
+{% load staticfiles %}
 
 {% block head %}
-    {{ form.media }}
+    <script type="text/javascript" src="{% static 'admin/js/admin/RelatedObjectLookups.js' %}" ></script>
     <script type="text/javascript" src="{% url 'admin:jsi18n' %}" ></script>
 {% endblock head %}
 
-{% block content %}
+{% block basecontent %}
     <div class="row">
         <div class="ingredient-title">
-            <h1>New Ingredient Category</h1><hr>
+            <h1>New {{ object_name }}</h1><hr>
         </div>
     </div>
 
@@ -24,4 +25,4 @@
         </div>
     </div>
 
-{% endblock content %}
+{% endblock basecontent %}

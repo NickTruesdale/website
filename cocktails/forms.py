@@ -2,29 +2,13 @@ from django import forms
 from django.conf import settings
 from django.urls import reverse
 
-from .models import Ingredient, IngredientClass, IngredientCategory, IngredientSubcategory
+from .models import Ingredient, IngredientClass, IngredientCategory
 from .widgets import CreateNewButtonWidget
 
 
-# ----------------------
-# INGREDIENT FORM WIZARD
-# -----------------------
-class IngredientPreForm1(forms.ModelForm):
-    ''' Simple form for adding a class to a category '''
-
-    class Meta:
-        model = IngredientCategory
-        fields = ('ingredient_class',)
-
-
-class IngredientPreForm2(forms.ModelForm):
-    ''' After choosing a class, the user chooses a category '''
-
-    class Meta:
-        model = IngredientSubcategory
-        fields = ('category',)
-
-
+# ---------------
+# INGREDIENT FORM
+# ---------------
 class IngredientForm(forms.ModelForm):
     ''' Form for adding and editing ingredients '''
 
@@ -41,9 +25,25 @@ class IngredientForm(forms.ModelForm):
         super().__init__(*args, **kwargs)
 
         # Create custom wrapper widgets for the Foreign Key fields
+        self.fields['ingredient_class'].widget = CreateNewButtonWidget(
+            self.fields['ingredient_class'].widget,
+            reverse('ingredient-class-create')
+        )
         self.fields['ingredient_category'].widget = CreateNewButtonWidget(
             self.fields['ingredient_category'].widget,
-            reverse('ingredient_category_new')
+            reverse('ingredient-category-create')
+        )
+        self.fields['subcategory'].widget = CreateNewButtonWidget(
+            self.fields['subcategory'].widget,
+            reverse('ingredient-subcategory-create')
+        )
+        self.fields['distillery'].widget = CreateNewButtonWidget(
+            self.fields['distillery'].widget,
+            reverse('distillery-create')
+        )
+        self.fields['manufacturer'].widget = CreateNewButtonWidget(
+            self.fields['manufacturer'].widget,
+            reverse('manufacturer-create')
         )
 
     class Media:
@@ -68,34 +68,4 @@ class IngredientForm(forms.ModelForm):
             'wiki_url',
             'amazon_url_us',
             'amazon_url_uk',
-        )
-
-
-class IngredientCategoryForm(forms.ModelForm):
-
-    class Media:
-        js = (
-            settings.STATIC_URL + 'admin/js/admin/RelatedObjectLookups.js',
-        )
-
-    class Meta:
-        model = IngredientCategory
-        fields = (
-            'name',
-            'description',
-            'image_url',
-            'wiki_url',
-            'ingredient_class',
-        )
-
-
-class IngredientClassForm(forms.ModelForm):
-
-    class Meta:
-        model = IngredientClass
-        fields = (
-            'name',
-            'description',
-            'image_url',
-            'wiki_url',
         )

@@ -9,6 +9,7 @@ Drink --> Recipe(s) --> Ingredient(s)
 
 from django.db import models
 from django.core.validators import MinValueValidator, MaxValueValidator
+from django.core.urlresolvers import reverse
 
 from django_countries.fields import CountryField
 from localflavor.us.us_states import STATE_CHOICES
@@ -186,6 +187,9 @@ class IngredientCategory(BaseObjectWithImage):
     class Meta:
         verbose_name_plural = 'ingredient categories'
 
+    def get_absolute_url(self):
+        return reverse('ingredient-category-detail', kwargs={'pk': self.pk})
+
 
 class IngredientSubcategory(BaseObjectWithImage):
     ''' Sub-category for ingredients (subset of a category) '''
@@ -245,6 +249,9 @@ class Ingredient(BaseObjectWithImage, BaseObjectAmazon):
         null=True,
         on_delete=models.SET_NULL
     )
+
+    def get_absolute_url(self):
+        return reverse('ingredient-detail', kwargs={'pk': self.pk})
 
     def proof(self):
         return self.abv*2.0 or None

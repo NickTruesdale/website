@@ -1,4 +1,4 @@
-{% extends 'cocktails/base.html' %}
+{% extends 'cocktails/base_title.html' %}
 
 {% block content %}
     <div class="row">
@@ -12,7 +12,7 @@
             <div class="card">
                 <h2>Links</h2>
                 <p>New Ingredient: 
-                    <a class="page-link" href="{% url 'ingredient_new' %}">
+                    <a class="page-link" href="{% url 'ingredient-create' %}">
                         <span class="glyphicon glyphicon-leaf"></span>
                     </a>
                 </p>
