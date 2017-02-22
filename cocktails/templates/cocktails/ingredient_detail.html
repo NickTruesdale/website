@@ -1,4 +1,5 @@
 {% extends 'cocktails/base_title.html' %}
+{% load staticfiles %}
 
 {% block content %}
     <div class="row">
@@ -19,19 +20,22 @@
         <div class="row">
             <div class="card">
                 <h2>Classification</h2>
-                <p>Class: {{ ingredient.subcategory.category.ingredient_class.name }}</p>
+                <p>Class: <a href="{{ ingredient.subcategory.category.ingredient_class.get_absolute_url }}">
+                    {{ ingredient.subcategory.category.ingredient_class.name }}
+                </a></p>
                 <p>Category: {{ ingredient.subcategory.category.name }}</p>
                 <p>Subcategory: {{ ingredient.subcategory.name }}</p>
             </div>
         </div>
 
         <div class="row">
-            <div class="card">
+            <div class="card links">
                 <h2>Links</h2>
-                <p>Wikipedia: </p>
-                <p>Amazon US: </p>
-                <p>Amazon UK: </p>
-                <i class="fa fa-amazon"></i>
+                <a href="{{ ingredient.wiki_url }}"><i class="fa fa-wikipedia-w"></i></a>
+                <a href="{{ ingredinet.amazon_url_us }}"><i class="fa fa-amazon"></i></a>
+                <a href="{{ ingredient.amazon_url_uk }}">
+                    <i class="fa fa-amazon"></i><img class="amazon-flag" src="{% static 'flags/gb.gif' %}">
+                </a>
             </div>
         </div>
     </div>
@@ -49,7 +53,6 @@
             <div class="card">
                 <h2>Specs</h2>
                 <p>Alcohol: {{ ingredient.abv }}%</p>
-                <p>Volume: </p>
             </div>
         </div>
     </div>

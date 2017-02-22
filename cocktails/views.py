@@ -1,4 +1,4 @@
-from django.views.generic import UpdateView, DetailView
+from django.views.generic import View, TemplateView, UpdateView, DetailView
 from django.shortcuts import render, get_object_or_404, redirect
 from django.utils.html import escape, escapejs
 from django.http import HttpResponse
@@ -9,57 +9,9 @@ from .models import Distillery, Manufacturer
 from .forms import IngredientForm
 
 
-# Create your views here.
-def cocktail_home(request):
-    ''' Default landing page for now '''
-    return render(request, 'cocktails/home.html')
-
-
-def ingredient_create(request):
-    ''' View for new ingredients '''
-
-    # Check if we're getting a POSTed form, otherwise make a blank new one
-    if request.method == "POST":
-        form = IngredientForm(request.POST)
-        if form.is_valid():
-            ingredient = form.save(commit=False)
-            ingredient.save()
-            return redirect('ingredient-detail', pk=ingredient.pk)
-    else:
-        form = IngredientForm()
-
-    return render(request, 'cocktails/ingredient_edit.html', {'form': form})
-
-
-def ingredient_update(request, pk):
-    ''' View for editing an existing ingredient '''
-    # Make sure this PK points to a valid ingredient
-    ingredient = get_object_or_404(Ingredient, pk=pk)
-
-    # Validate a POSTed form or render a new one using this ingredient
-    if request.method == "POST":
-        form = IngredientForm(request.POST, instance=ingredient)
-        if form.is_valid():
-            ingredient = form.save(commit=False)
-            ingredient.save()
-            return redirect('ingredient-detail', pk=ingredient.pk)
-
-    else:
-        form = IngredientForm(instance=ingredient)
-
-    return render(request, 'cocktails/ingredient_edit.html', {'form': form})
-
-
-def ingredient_detail(request, pk):
-    ''' View for a single ingredient '''
-    ingredient = get_object_or_404(Ingredient, pk=pk)
-    return render(request, 'cocktails/ingredient_detail.html', {'ingredient': ingredient})
-
-
 # -----------------------
 # Class Based View Mixins
 # -----------------------
-
 class CreateUpdateMixin(object):
     ''' Hybrid create/update view. The get_object function is overloaded
     to return None when there is no valid object (i.e. for the Create form).
@@ -114,9 +66,58 @@ class IngredientForeignKeyView(CreateUpdateMixin, PopupEditMixin, ShortDescripti
     template_name = 'cocktails/ingredient_foreign_key_edit.html'
 
 
+# ---------
+# Home page
+# ---------
+class Home(TemplateView):
+    template_name = 'cocktails/home.html'
+
+
+# ----------
+# Ingredient
+# ----------
+class IngredientDetail(DetailView):
+    model = Ingredient
+
+
+class IngredientEdit(CreateUpdateMixin, UpdateView):
+    model = Ingredient
+    template_name = 'cocktails/ingredient_edit.html'
+    form_class = IngredientForm
+
+
 # ------------------------
 # Ingredient Field Classes
 # ------------------------
+class IngredientCategorization(TemplateView):
+    ''' This view provides a single interface for looking up ingredient class,
+    category and subcategory.
+
+    At initial load, it provides a list of all classes (which in turn can be
+    queried for all categories and subcategories)
+
+    It also responds to AJAX GET requests to serve up a
+    given instance of one of the three classes for viewing.
+    '''
+
+    template_name = 'cocktails/ingredient_categorization_browser.html'
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['ingredientclasses'] = IngredientClass.objects.all()
+        return context
+
+
+class IngredientClassDetail(DetailView):
+    model = IngredientClass
+    template_name = 'cocktails/ingredient_class_detail.html'
+
+
+class IngredientClassEdit(IngredientForeignKeyView):
+    model = IngredientClass
+    fields = ['name', 'description', 'image_url', 'wiki_url']
+
+
 class IngredientCategoryDetail(DetailView):
     model = IngredientCategory
 
@@ -124,15 +125,6 @@ class IngredientCategoryDetail(DetailView):
 class IngredientCategoryEdit(IngredientForeignKeyView):
     model = IngredientCategory
     fields = ['name', 'ingredient_class', 'description', 'image_url', 'wiki_url']
-
-
-class IngredientClassDetail(DetailView):
-    model = IngredientClass
-
-
-class IngredientClassEdit(IngredientForeignKeyView):
-    model = IngredientClass
-    fields = ['name', 'description', 'image_url', 'wiki_url']
 
 
 class IngredientSubcategoryDetail(DetailView):

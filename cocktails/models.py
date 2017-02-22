@@ -174,6 +174,9 @@ class IngredientClass(BaseObjectWithImage):
     class Meta:
         verbose_name_plural = 'ingredient classes'
 
+    def get_absolute_url(self):
+        return reverse('ingredient-class-detail', kwargs={'pk': self.pk})
+
     def __str__(self):
         return self.name
 
@@ -199,6 +202,9 @@ class IngredientSubcategory(BaseObjectWithImage):
 
     class Meta:
         verbose_name_plural = 'ingredient subcategories'
+
+    def get_absolute_url(self):
+        return reverse('ingredient-subcategory-detail', kwargs={'pk': self.pk})
 
 
 # -----------

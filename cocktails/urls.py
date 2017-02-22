@@ -1,18 +1,19 @@
 from django.conf.urls import url
 
-from .views import cocktail_home
-from .views import ingredient_create, ingredient_detail, ingredient_update
+from .views import Home
+from .views import IngredientDetail, IngredientEdit
 from .views import IngredientCategoryEdit, IngredientCategoryDetail
 from .views import IngredientClassEdit, IngredientClassDetail
 from .views import IngredientSubcategoryEdit, IngredientSubcategoryDetail
 from .views import DistilleryEdit, DistilleryDetail
 from .views import ManufacturerEdit, ManufacturerDetail
+from .views import IngredientCategorization
 
 urlpatterns = [
-    url(r'^$', cocktail_home, name='cocktail-home'),
-    url(r'^ingredient/new/$', ingredient_create, name='ingredient-create'),
-    url(r'^ingredient/(?P<pk>\d+)/$', ingredient_detail, name='ingredient-detail'),
-    url(r'^ingredient/(?P<pk>\d+)/edit/$', ingredient_update, name='ingredient-update'),
+    url(r'^$', Home.as_view(), name='cocktail-home'),
+    url(r'^ingredient/new/$', IngredientEdit.as_view(), name='ingredient-create'),
+    url(r'^ingredient/(?P<pk>\d+)/$', IngredientDetail.as_view(), name='ingredient-detail'),
+    url(r'^ingredient/(?P<pk>\d+)/edit/$', IngredientEdit.as_view(), name='ingredient-update'),
 
     url(r'^ingredient_class/new/$', IngredientClassEdit.as_view(), name='ingredient-class-create'),
     url(r'^ingredient_class/(?P<pk>\d+)/$', IngredientClassDetail.as_view(), name='ingredient-class-detail'),
@@ -33,4 +34,6 @@ urlpatterns = [
     url(r'^manufacturer/new/$', ManufacturerEdit.as_view(), name='manufacturer-create'),
     url(r'^manufacturer/(?P<pk>\d+)/$', ManufacturerDetail.as_view(), name='manufacturer-detail'),
     url(r'^manufacturer/(?P<pk>\d+)/edit/$', ManufacturerEdit.as_view(), name='manufacturer-update'),
+
+    url(r'^ingredient_categorization/$', IngredientCategorization.as_view(), name='ingredient-categorization-browser')
 ]

@@ -7,6 +7,11 @@ body {
     font-family: 'Roboto';
 }
 
+a {
+    text-decoration: underline;
+    color: #000000;
+}
+
 .page-header {
     margin-top: 0;
     text-align: center;
@@ -104,11 +109,6 @@ body {
     margin-bottom: 16px;
 }
 
-.page-link {
-    text-decoration: none;
-    color: #000000;
-}
-
 .ingredient-form form textarea, .ingredient-form form input {
     width:100%;
 }
@@ -119,4 +119,32 @@ body {
 
 .add-another {
     margin: 4px;
+}
+
+.links {
+    font-size: 18pt;
+}
+
+.links a {
+    display: inline-block;
+    margin-right: 20px;
+}
+
+ul {
+    list-style: none;
+    padding-left: 16px;
+    padding-bottom: 8px;
+}
+
+li {
+    margin-bottom: 5px;
+}
+
+
+li span {
+    font-size: 6pt;
+}
+
+.glyphicon-chevron-right, .glyphicon-minus {
+    margin: 0 6px;
 }
