@@ -1,7 +1,9 @@
-from django.views.generic import View, TemplateView, UpdateView, DetailView
+from django.views.generic import TemplateView, UpdateView, DetailView
 from django.shortcuts import render, get_object_or_404, redirect
 from django.utils.html import escape, escapejs
+from django.apps import apps
 from django.http import HttpResponse
+from django.core import serializers
 from django import forms
 
 from .models import Ingredient, IngredientSubcategory, IngredientCategory, IngredientClass
@@ -106,6 +108,24 @@ class IngredientCategorization(TemplateView):
         context = super().get_context_data(**kwargs)
         context['ingredientclasses'] = IngredientClass.objects.all()
         return context
+
+    def get(self, request, *args, **kwargs):
+        if request.is_ajax():
+            status = 200
+            pk = request.GET.get('pk')
+            model_type = request.GET.get('model_type')
+
+            try:
+                model = apps.get_model('cocktails', model_type)
+                response = serializers.serialize('json', model.objects.filter(pk=pk), use_natural_foreign_keys=False)
+
+            except Exception as e:
+                status = 400
+                response = [{'error_name': type(e).__name__, 'error-text': str(e)}]
+
+            return HttpResponse(response, content_type="application/json", status=status)
+        else:
+            return super().get(request, *args, **kwargs)
 
 
 class IngredientClassDetail(DetailView):
