@@ -42,6 +42,7 @@ INSTALLED_APPS = [
     'djfractions',
     'currencies',
     'localflavor',
+    'widget_tweaks',
     'cocktails',
 ]
 

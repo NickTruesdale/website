@@ -1,8 +1,8 @@
-from django.views.generic import TemplateView, UpdateView, DetailView
+from django.views.generic import TemplateView, UpdateView, DetailView, CreateView
 from django.shortcuts import render, get_object_or_404, redirect
 from django.utils.html import escape, escapejs
 from django.apps import apps
-from django.http import HttpResponse
+from django.http import HttpResponse, JsonResponse
 from django.core import serializers
 from django import forms
 
@@ -126,6 +126,25 @@ class IngredientCategorization(TemplateView):
             return HttpResponse(response, content_type="application/json", status=status)
         else:
             return super().get(request, *args, **kwargs)
+
+
+class IngredientClassCreate(CreateUpdateMixin, ShortDescriptionMixin, UpdateView):
+    ''' Modal class creation form '''
+    model = IngredientClass
+    fields = ['name', 'description', 'image_url', 'wiki_url']
+    template_name = 'cocktails/ingredient_class_create.html'
+
+    def form_valid(self, form):
+        ''' Return a JSON response with the pk and a success message '''
+        instance = form.save()
+        message = 'New object created successfully.'
+        response = {'success': 1, 'message': message, 'pk': instance.pk}
+        return JsonResponse(response)
+
+    def form_invalid(self, form):
+        message = 'Object could not be created. Please resolve any errors and submit again.'
+        response = {'success': 0, 'message': message, 'errors': form.errors}
+        return JsonResponse(response)
 
 
 class IngredientClassDetail(DetailView):

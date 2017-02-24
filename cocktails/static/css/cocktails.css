@@ -191,3 +191,56 @@ It should allow for vertical separators in Bootstrap columns.
 .nodisp {
     display: none;
 }
+
+
+
+/*
+New form class (these should be adopted in all other forms)
+*/
+
+.form-header {
+    text-align: center;
+}
+
+.form-header h1 {
+    font-size: 30pt;
+    font-family: 'Oswald';
+    font-weight: 700;
+
+    display: inline-block;
+}
+
+
+.form-header hr {
+    margin-top: 0;
+}
+
+.form-body label {
+    margin-top: 8px;
+}
+
+.field-control {
+    width:100%;
+}
+
+.field-errors {
+    width: 100%;
+    padding: 4px;
+    margin: 0 0 8px 0;
+}
+
+.form-footer {
+    margin-top: 12px;
+}
+
+.form-footer button {
+    display: block;
+    float: right;
+    margin-left: 20px;
+}
+
+.form-response {
+    padding: 8px 0 3px 8px;
+    clear: left;
+    text-align: left;
+}
