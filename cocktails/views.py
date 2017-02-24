@@ -8,7 +8,7 @@ from django import forms
 
 from .models import Ingredient, IngredientSubcategory, IngredientCategory, IngredientClass
 from .models import Distillery, Manufacturer
-from .forms import IngredientForm
+from .forms import IngredientForm, IngredientSearchForm
 
 
 # -----------------------
@@ -125,6 +125,18 @@ class Home(TemplateView):
 class IngredientSearch(TemplateView):
     ''' Search window for ingredients '''
     template_name = 'cocktails/ingredient_search.html'
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['form'] = IngredientSearchForm()
+        return context
+
+    def get(self, request, *args, **kwargs):
+        if request.is_ajax():
+            response = serializers.serialize('json', Ingredient.objects.all())
+            return HttpResponse(response, content_type="application/json")
+        else:
+            return super().get(request, *args, **kwargs)
 
 
 class IngredientDetail(DetailView):

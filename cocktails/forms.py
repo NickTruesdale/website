@@ -2,7 +2,8 @@ from django import forms
 from django.conf import settings
 from django.urls import reverse
 
-from .models import Ingredient, IngredientClass, IngredientCategory
+from .models import Ingredient, IngredientClass, IngredientCategory, IngredientSubcategory
+from .models import Distillery, Manufacturer
 from .widgets import CreateNewButtonWidget
 
 
@@ -69,3 +70,28 @@ class IngredientForm(forms.ModelForm):
             'amazon_url_us',
             'amazon_url_uk',
         )
+
+
+class IngredientSearchForm(forms.Form):
+    ''' Form containing model selects for each FK field in ingredient '''
+    name = forms.CharField(max_length=60)
+
+    ingredient_class = forms.ModelChoiceField(
+        queryset=IngredientClass.objects.all(),
+    )
+
+    ingredient_category = forms.ModelChoiceField(
+        queryset=IngredientCategory.objects.all(),
+    )
+
+    ingredient_subcategory = forms.ModelChoiceField(
+        queryset=IngredientSubcategory.objects.all(),
+    )
+
+    distillery = forms.ModelChoiceField(
+        queryset=Distillery.objects.all(),
+    )
+
+    manufacturer = forms.ModelChoiceField(
+        queryset=Manufacturer.objects.all(),
+    )

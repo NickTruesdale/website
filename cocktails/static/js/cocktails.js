@@ -2,6 +2,9 @@
 // 
 
 $(function() {
+    // Add handler for ingredient search buttons
+    $('.btn-search').click(ingredientSearchHandler);
+
     // Add click handler for clicked hierarchy titles
     $('.hierarchy-item').click(hierarchyClickHandler);
 
@@ -35,6 +38,22 @@ var modalAfterLoad = function()
 {
     console.log('shown');
     $('.form-submit').click(formSubmitHandler);
+};
+
+var ingredientSearchHandler = function()
+{
+    $.ajax({
+        url: window.location.pathname,
+        data: {},
+
+        success: function(data) {
+            console.log(data);
+        },
+
+        error: function(xhr, errmsg, err) {
+
+        },
+    });
 };
 
 var formSubmitHandler = function() 

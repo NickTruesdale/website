@@ -1,7 +1,7 @@
 {% extends "cocktails/base_title.html" %}
+{% load widget_tweaks %}
 
 {% block content %}
-
 <div class="modal" id="modalForm" data-url=""></div>
 
 <div class="row">
@@ -16,11 +16,24 @@
     <div class="row">
       <div class="panel panel-default">
         <div class="panel-heading">
-          <h2 class="panel-title">Search</h2>
+          <h2 class="panel-title pull-left">Search</h2>
+          <div class="btn-toolbar pull-right">
+            <button type="button" class="btn btn-default btn-search" id="btn-search-all">
+              <span class="glyphicon glyphicon-list"></span>
+            </button>
+            <button type="button" class="btn btn-default btn-search" id="btn-search">
+              <span class="glyphicon glyphicon-search"></span>
+            </button>
+          </div>
+          <div class="clearfix"></div>
         </div>
-        <div class="panel-body">
-          <p>Search in here</p>
-          <input type="text">
+        <div class="panel-body">          
+          <div class="modal-body">
+          {% for field in form.visible_fields %}
+              {{ field.label_tag }} {{ field|attr:"class:field-control" }}
+              <ul class="field-errors" id="field-errors-{{ field.html_name }}"></ul>
+          {% endfor %}
+          </div>
         </div>
       </div>
     </div>
