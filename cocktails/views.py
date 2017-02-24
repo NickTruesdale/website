@@ -122,6 +122,11 @@ class Home(TemplateView):
 # ----------
 # Ingredient
 # ----------
+class IngredientSearch(TemplateView):
+    ''' Search window for ingredients '''
+    template_name = 'cocktails/ingredient_search.html'
+
+
 class IngredientDetail(DetailView):
     model = Ingredient
 
@@ -212,3 +217,5 @@ ingredient_cat = IngredientCategorization.as_view()
 ingredient_class_edit = IngredientClassEdit.as_view()
 ingredient_category_edit = IngredientCategoryEdit.as_view()
 ingredient_subcategory_edit = IngredientSubcategoryEdit.as_view()
+
+ingredient_search = IngredientSearch.as_view()

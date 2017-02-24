@@ -1,0 +1,43 @@
+{% extends "cocktails/base_title.html" %}
+
+{% block content %}
+
+<div class="modal" id="modalForm" data-url=""></div>
+
+<div class="row">
+  <div class="page-title">
+    <h1>Ingredient Search</h1>
+    <hr>
+  </div>
+</div>
+
+<div class="row">
+  <div class="col-xs-5 col-md-3 border-right">
+    <div class="row">
+      <div class="panel panel-default">
+        <div class="panel-heading">
+          <h2 class="panel-title">Search</h2>
+        </div>
+        <div class="panel-body">
+          <p>Search in here</p>
+          <input type="text">
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="col-xs-7 col-md-9 border-right">
+    <div class="row">
+      <div class="panel panel-default">
+        <div class="panel-heading">
+          <h2 class="panel-title">Results</h2>
+        </div>
+        <div class="panel-body">
+          <p>Results in here</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+{% endblock content %}

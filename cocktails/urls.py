@@ -4,6 +4,7 @@ from .views import Home
 from .views import IngredientDetail, IngredientEdit
 from .views import DistilleryEdit, DistilleryDetail
 from .views import ManufacturerEdit, ManufacturerDetail
+from .views import ingredient_search
 from .views import ingredient_cat, ingredient_class_edit, ingredient_category_edit, ingredient_subcategory_edit
 
 urlpatterns = [
@@ -11,6 +12,8 @@ urlpatterns = [
     url(r'^ingredient/new/$', IngredientEdit.as_view(), name='ingredient-create'),
     url(r'^ingredient/(?P<pk>\d+)/$', IngredientDetail.as_view(), name='ingredient-detail'),
     url(r'^ingredient/(?P<pk>\d+)/edit/$', IngredientEdit.as_view(), name='ingredient-update'),
+
+    url(r'^ingredient_search/$', ingredient_search, name='ingredient-search'),
 
     url(r'^distillery/new/$', DistilleryEdit.as_view(), name='distillery-create'),
     url(r'^distillery/(?P<pk>\d+)/$', DistilleryDetail.as_view(), name='distillery-detail'),

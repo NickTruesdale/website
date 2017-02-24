@@ -1,44 +1,50 @@
 {% extends 'cocktails/base_title.html' %}
 
 {% block content %}
+  <div class="row">
+    <div class="ingredient-title">
+      <h1>Home Page</h1><hr>
+    </div>
+  </div>
+
+  <div class="ingredient-details col-xs-12 col-md-6">      
     <div class="row">
-        <div class="ingredient-title">
-            <h1>Home Page</h1><hr>
-        </div>
+      <div class="card">
+        <h2>Links</h2>
+        <p>
+          New Ingredient: 
+          <a class="page-link" href="{% url 'ingredient-create' %}">
+            <span class="glyphicon glyphicon-leaf"></span>
+          </a>
+        </p>
+        <p>
+          New Recipe: 
+          <a class="page-link" href="/">
+            <span class="glyphicon glyphicon-glass"></span>
+          </a>
+        </p>
+        <p>
+          Categorization Browser:
+          <a class="page-link" href="{% url 'ingredient-categorization-browser' %}">
+            <span class="glyphicon glyphicon-th-list"></span>
+          </a>    
+        </p>
+        <p>
+          Ingredient Search:
+          <a class="page-link" href="{% url 'ingredient-search' %}">
+            <span class="glyphicon glyphicon-search"></span>
+          </a> 
+        </p>
+      </div>
     </div>
+  </div>
 
-    <div class="ingredient-details col-xs-12 col-md-6">      
-        <div class="row">
-            <div class="card">
-                <h2>Links</h2>
-                <p>
-                    New Ingredient: 
-                    <a class="page-link" href="{% url 'ingredient-create' %}">
-                        <span class="glyphicon glyphicon-leaf"></span>
-                    </a>
-                </p>
-                <p>
-                    New Recipe: 
-                    <a class="page-link" href="/">
-                        <span class="glyphicon glyphicon-glass"></span>
-                    </a>
-                </p>
-                <p>
-                    Categorization Browser:
-                    <a class="page-link" href="{% url 'ingredient-categorization-browser' %}">
-                        <span class="glyphicon glyphicon-th-list"></span>
-                    </a>    
-                </p>
-            </div>
-        </div>
+  <div class="ingredient-details col-xs-12 col-md-6">      
+    <div class="row">
+      <div class="card">
+        <h2>Other stuff</h2>
+        <p>We'll put more stuff here...</p>
+      </div>
     </div>
-
-    <div class="ingredient-details col-xs-12 col-md-6">      
-        <div class="row">
-            <div class="card">
-                <h2>Other stuff</h2>
-                <p>We'll put more stuff here...</p>
-            </div>
-        </div>
-    </div>
+  </div>
 {% endblock %}
