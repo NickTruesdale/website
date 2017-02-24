@@ -53,6 +53,45 @@ class PopupEditMixin(object):
             return post_result
 
 
+class JsonFormMixin(object):
+    ''' This mixin provides Json responses for the form_valid and form_invalid
+    methods, allowing forms to be posted asynchronously.
+    '''
+
+    def get(self, request, *args, **kwargs):
+        ''' If the GET request has parameters corresponding to model properties,
+        we will try to preload the form with the correct value
+        '''
+        self.object = self.get_object()
+        form_class = self.get_form_class()
+
+        if self.object is None:
+            # Grab any valid initial values from the GET params
+            initial = {}
+            for key, value in request.GET.items():
+                if hasattr(self.model, key):
+                    initial[key] = value
+
+            form = form_class(initial=initial)
+        else:
+            form = self.get_form(form_class)
+
+        return self.render_to_response(self.get_context_data(form=form))
+
+    def form_valid(self, form):
+        ''' Return a JSON response with the pk and a success message '''
+        instance = form.save()
+        response = {'success': 1, 'pk': instance.pk}
+        return JsonResponse(response)
+
+    def form_invalid(self, form):
+        response = {'success': 0, 'errors': form.errors}
+        return JsonResponse(response)
+
+    def verbose_name(self):
+        return self.model._meta.verbose_name.title()
+
+
 class ShortDescriptionMixin(object):
     ''' This mixin shortens the widget for the description field's Textarea '''
 
@@ -66,6 +105,11 @@ class ShortDescriptionMixin(object):
 class IngredientForeignKeyView(CreateUpdateMixin, PopupEditMixin, ShortDescriptionMixin, UpdateView):
     ''' Single class which handles mixins for all child classes that use an edit popup '''
     template_name = 'cocktails/ingredient_foreign_key_edit.html'
+
+
+class IngredientCategorizationModalView(CreateUpdateMixin, ShortDescriptionMixin, JsonFormMixin, UpdateView):
+    ''' Single class which handle the mixins using the modal edit form '''
+    template_name = 'cocktails/modal_edit_form.html'
 
 
 # ---------
@@ -128,49 +172,17 @@ class IngredientCategorization(TemplateView):
             return super().get(request, *args, **kwargs)
 
 
-class IngredientClassCreate(CreateUpdateMixin, ShortDescriptionMixin, UpdateView):
-    ''' Modal class creation form '''
-    model = IngredientClass
-    fields = ['name', 'description', 'image_url', 'wiki_url']
-    template_name = 'cocktails/ingredient_class_create.html'
-
-    def form_valid(self, form):
-        ''' Return a JSON response with the pk and a success message '''
-        instance = form.save()
-        message = 'New object created successfully.'
-        response = {'success': 1, 'message': message, 'pk': instance.pk}
-        return JsonResponse(response)
-
-    def form_invalid(self, form):
-        message = 'Object could not be created. Please resolve any errors and submit again.'
-        response = {'success': 0, 'message': message, 'errors': form.errors}
-        return JsonResponse(response)
-
-
-class IngredientClassDetail(DetailView):
-    model = IngredientClass
-    template_name = 'cocktails/ingredient_class_detail.html'
-
-
-class IngredientClassEdit(IngredientForeignKeyView):
+class IngredientClassEdit(IngredientCategorizationModalView):
     model = IngredientClass
     fields = ['name', 'description', 'image_url', 'wiki_url']
 
 
-class IngredientCategoryDetail(DetailView):
-    model = IngredientCategory
-
-
-class IngredientCategoryEdit(IngredientForeignKeyView):
+class IngredientCategoryEdit(IngredientCategorizationModalView):
     model = IngredientCategory
     fields = ['name', 'ingredient_class', 'description', 'image_url', 'wiki_url']
 
 
-class IngredientSubcategoryDetail(DetailView):
-    model = IngredientSubcategory
-
-
-class IngredientSubcategoryEdit(IngredientForeignKeyView):
+class IngredientSubcategoryEdit(IngredientCategorizationModalView):
     model = IngredientSubcategory
     fields = ['name', 'category', 'description', 'image_url', 'wiki_url']
 
@@ -191,3 +203,12 @@ class ManufacturerDetail(DetailView):
 class ManufacturerEdit(IngredientForeignKeyView):
     model = Manufacturer
     fields = ['name', 'description', 'country', 'us_state', 'city', 'image_url', 'wiki_url', 'own_url']
+
+
+# ---------------
+# Class Instances
+# ---------------
+ingredient_cat = IngredientCategorization.as_view()
+ingredient_class_edit = IngredientClassEdit.as_view()
+ingredient_category_edit = IngredientCategoryEdit.as_view()
+ingredient_subcategory_edit = IngredientSubcategoryEdit.as_view()

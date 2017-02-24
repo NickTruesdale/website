@@ -2,34 +2,46 @@
 // 
 
 $(function() {
+    // Add click handler for clicked hierarchy titles
     $('.hierarchy-item').click(hierarchyClickHandler);
 
-    //$('.modal-button').click(modalPreload);
-    //$('#modal').on('show.bs.modal', modalLoad);
-    $('.form-submit').click(formSubmitHandler);
+    // Capture modal button click and initial load
+    $('.modal-button').click(modalPreload);
+    $('#modalForm').on('show.bs.modal', modalLoad);
+
+    // Click handlers for dynamically generated elements
+    $(document).on('click', '.form-submit', formSubmitHandler);
 });
 
 var modalPreload = function()
 {
-    console.log($(this).attr("href"));
+    targetUrl = $(this).attr('data-url');
+    $('#modalForm').attr('data-url', targetUrl);
 };
 
 var modalLoad = function() 
 {
+    var modal = $(this);
     $.ajax({
-        url: '/ingredient_class/new/',
+        url: modal.attr('data-url'),
         context: document.body,
         success: function(data) {
-            $(this).html(data);
+            modal.html(data);
         }
-    });
+    });   
+};
+
+var modalAfterLoad = function()
+{
+    console.log('shown');
+    $('.form-submit').click(formSubmitHandler);
 };
 
 var formSubmitHandler = function() 
 {
     var key, idx, listItem, message;
     var form = $(this).closest("form");
-    var postUrl = window.location.pathname;
+    var postUrl = form.attr('action');
 
     // Submit POST via ajax and process the response
     $.ajax({
@@ -52,16 +64,8 @@ var formSubmitHandler = function()
             // Check whether the form was valid or invalid
             if (data.success)
             {
-                // Display a success message
-                message = 'Object was ';
-                message += ($('.form-pk').text() === 'None') ? 'created' : 'updated';
-                message += ' successfully.';
-                $('.form-response').text(data.message);
-                $('.form-response').addClass('alert alert-success');
-
-                // Update the form's pk and change the title
-                $('.form-pk').text(data.pk);
-                $('.form-header h1:first').text('Update Ingredient Class');
+                $('#modalForm').html('');
+                $('#modalForm').modal('hide');
             }
             else
             {   
@@ -95,6 +99,7 @@ var formSubmitHandler = function()
 
 var hierarchyClickHandler = function() 
 {
+    // Parse out the model and the pk
     var id = $(this).attr("id");
     var modelType = id.split('-')[0];
     var pk = id.split('-')[1];
@@ -106,34 +111,56 @@ var hierarchyClickHandler = function()
         success: function(data) {
             data = data[0];
             console.log(data);
+            var createUrl;
 
-            $('.details').removeClass('nodisp');
+            // Construct the correct edit url for this model and add to the edit button
+            // Right now we'll grab this from the create buttons, which is a bit janky
+            // and may need to be refactored if we ever remove those buttons.
+            var editUrl = $('#modal-create-'+modelType).attr('data-url').replace('new', pk + '/edit');
+            $('#modal-edit').attr('data-url', editUrl);
 
-            $('#detail-name').text('Name: ' + data.fields.name);
-            $('#detail-description').text('Description: ' + data.fields.description);
+            // Unhide the details panel
+            $('.details').show();
+
+            // Fill in the fields
+            $('#detail-name span').text(data.fields.name);
+            $('#detail-name small').text(modelType.replace('Ingredient',''));
+            $('#detail-description').text(data.fields.description);
             $('#detail-wiki').attr('href', data.fields.wiki_url);
-            $('#detail-image').attr('src', data.fields.image_url);
+            //$('#detail-image').attr('src', data.fields.image_url);
 
-            // If the parent class exists, update it and show the element. Otherwise hide it.
-            if (modelType === 'IngredientCategory' || modelType === 'IngredientSubcategory')
+            // Model specific actions
+            if (modelType === 'IngredientClass')
+            {
+                $('#detail-class').hide();
+                $('#detail-category').hide();
+                $('#modal-create-child').show();
+
+                createUrl = $('#modal-create-IngredientCategory').attr('data-url');
+                createUrl += '?class=' + pk;
+                $('#modal-create-child').attr('data-url', createUrl);
+            }
+            else if (modelType === 'IngredientCategory')
             {
                 $('#detail-class').text('Parent Class: ' + getParentClass(id));
                 $('#detail-class').show();
+
+                $('#detail-category').hide();
+                $('#modal-create-child').show();
+
+                createUrl = $('#modal-create-IngredientSubcategory').attr('data-url');
+                createUrl += '?category=' + pk;
+                $('#modal-create-child').attr('data-url', createUrl);
             }
             else
             {
-                $('#detail-class').hide();
-            }
+                $('#detail-class').text('Parent Class: ' + getParentClass(id));
+                $('#detail-class').show();
 
-            // If the parent category exists, update it and show the element. Otherwise hide it. 
-            if (modelType === 'IngredientSubcategory')
-            {
                 $('#detail-category').text('Parent Category: ' + getParentCategory(id));
                 $('#detail-category').show();
-            }
-            else
-            {
-                $('#detail-category').hide();
+
+                $('#modal-create-child').hide();
             }
         },
 

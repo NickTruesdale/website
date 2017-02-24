@@ -3,8 +3,7 @@
 // BASE.HTML //
 //---------- */
 body {
-    min-width: 400px;
-    font-family: 'Roboto';
+
 }
 
 a {
@@ -12,52 +11,60 @@ a {
     color: #000000;
 }
 
-.page-header {
+.cocktail-header {
     margin-top: 0;
     text-align: center;
 }
 
-.page-title {
+.cocktail-title {
     display: inline-block;
     text-align: left;
 }
 
-.page-title a {
+.cocktail-title a {
     text-transform: uppercase;
     text-decoration: none;
     color: #000000;
 }
 
-.page-title h1,h2,h3 {
+.cocktail-title h1,h2,h3 {
     font-family: 'Oswald';
     font-weight: 700;
 }
 
-.page-title div {
+.cocktail-title div {
     display: inline-block;
     margin: 0px 6px;
 }
 
-.page-title h3 {
+.cocktail-title h3 {
     font-size: 12pt;
     opacity: 0.1;
     margin: 0 0 0 75px;
 }
 
-.page-title h2 {
+.cocktail-title h2 {
     font-size: 28pt;
     opacity: 0.6;
     margin: 0 0 0 75px;
 }
 
-.page-title h1 {
+.cocktail-title h1 {
     font-size: 48pt;
 }
 
-.page-title span {
+.cocktail-title span {
     font-family: 'Glyphicons Halflings';
     font-size: 24pt;
     margin: 0 4px;
+}
+
+.cocktail-subtitle h3 {
+    margin: 4px 0 12px 0;
+}
+
+.cocktail-header hr {
+    margin: 0;
 }
 
 
@@ -130,19 +137,37 @@ a {
     margin-right: 20px;
 }
 
-ul {
+/*
+Things we're actually using in the Ingredient Category Browser
+*/
+
+.page-title {
+    text-align: center;
+    margin: 0;
+}
+
+.page-title h1 {
+    font-size: 30pt;
+    font-family: 'Oswald';
+    font-weight: 700;
+}
+
+.page-title hr {
+    margin: 0;
+}
+
+.hierarchy-list.class-list {
+    padding-left: 0;
+}
+
+.hierarchy-list {
     list-style: none;
-    padding-left: 16px;
     padding-bottom: 6px;
+    padding-left: 16px;
 }
 
-li {
+.hierarchy-list li {
     margin-top: 6px;
-}
-
-
-li span {
-    font-size: 6pt;
 }
 
 .hierarchy-item {
@@ -151,58 +176,37 @@ li span {
     cursor: pointer;
 }
 
-.inline-button {
-    display: inline-block;
-    margin-left: 6px;
-    font-size: 8pt;
-}
-
-h2 {
-    display: inline-block;
-    margin-bottom: 0px;
-}
-
-hr {
-    margin-top: 8px;
-}
-
-.glyphicon-chevron-right, .glyphicon-minus {
+.hierarchy-icon {
     margin: 0 6px;
+    font-size: 6pt;
 }
 
-
-
-/* This snippet is taken from:
-http://martinsdevblog.blogspot.co.uk/2013/06/flexible-css-column-separators-done.html
-It should allow for vertical separators in Bootstrap columns.
-*/
-.border-left, .border-right { position: relative; }
-.border-left:before, .border-right:after {
-    position: absolute;
-    width: 0px;
-    border-left: 2px solid #aaa;
-    height: 100%;
-    top: 0px;
+.panel-title {
+    font-size: 22pt;
 }
-.border-left:before { left: -11px; }
-.border-right:after { right: -10px; }
-
 
 .nodisp {
     display: none;
 }
 
+.details {
+    display: none;
+}
 
+#detail-description {
+    white-space: pre-line;
+    text-align: justify;
+}
 
 /*
 New form class (these should be adopted in all other forms)
 */
 
-.form-header {
+.modal-header {
     text-align: center;
 }
 
-.form-header h1 {
+.modal-header h1 {
     font-size: 30pt;
     font-family: 'Oswald';
     font-weight: 700;
@@ -210,14 +214,18 @@ New form class (these should be adopted in all other forms)
     display: inline-block;
 }
 
-
-.form-header hr {
+.modal-header hr {
     margin-top: 0;
 }
 
-.form-body label {
+.modal-body label {
     margin-top: 8px;
 }
+
+.modal-footer {
+    margin-top: 12px;
+}
+
 
 .field-control {
     width:100%;
@@ -229,11 +237,7 @@ New form class (these should be adopted in all other forms)
     margin: 0 0 8px 0;
 }
 
-.form-footer {
-    margin-top: 12px;
-}
-
-.form-footer button {
+.modal-footer button {
     display: block;
     float: right;
     margin-left: 20px;

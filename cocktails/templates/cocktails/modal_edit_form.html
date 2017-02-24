@@ -1,0 +1,30 @@
+{% load widget_tweaks %}
+
+<div class="modal-dialog modal-lg">
+    <form class="form" action="{{ request.path }}">
+    {% csrf_token %}
+        <div class="modal-content">
+            <div class="modal-header">
+            {% if form.instance.pk %}
+                <h1>Update {{ view.verbose_name }}</h1>                
+            {% else %}
+                <h1>Create {{ view.verbose_name }}</h1>
+            {% endif %}
+                <button type="button" class="close" data-dismiss="modal">&times;</button>
+                <p class="form-pk nodisp">{{ form.instance.pk }}</p>
+            </div>
+            
+            <div class="modal-body">
+            {% for field in form.visible_fields %}
+                {{ field.label_tag }} {{ field|attr:"class:field-control" }}
+                <ul class="field-errors" id="field-errors-{{ field.html_name }}"></ul>
+            {% endfor %}
+            </div>
+    
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default form-submit">Submit</button>
+                <div class="form-response"></div>
+            </div>
+        </div>
+    </form>
+</div>

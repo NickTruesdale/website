@@ -1,99 +1,115 @@
 {% extends "cocktails/base_title.html" %}
 
 {% block content %}
-    <div class="modal fade" id="modal">
-        <div class="modal-dialog">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <button type="button" class="close" data-dismiss="modal">&times;</button>
-                    <h4 class="modal-title">Modal Header</h4>
-                </div>
-                <div class="modal-body">
-                    <p>Some text in the modal.</p>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-                </div>
-            </div>
-        </div>
-    </div>
 
+<div class="modal" id="modalForm" data-url=""></div>
+
+<div class="row">
+  <div class="page-title">
+    <h1>Ingredient Categorization</h1>
+    <hr>
+  </div>
+</div>
+
+<div class="row">
+  <div class="col-xs-5 col-md-3 border-right">
     <div class="row">
-        <div class="ingredient-title">
-            <h1>Ingredient Categorization</h1>
-            <hr>
+      
+      <div class="panel panel-default">
+        <div class="panel-heading">
+          <h2 class="panel-title">Hierarchy</h2>
         </div>
-    </div>
-
-    <div class="row">
-        <div class="col-xs-5 col-md-3 border-right">
-            <div class="row">
-                <h2>Hierarchy</h2>
-                <hr>
-                <ul>
-                {% for ingredientclass in ingredientclasses %}
-                    <li class="class-item">
-                        <a href="#catlist_{{ ingredientclass.name }}" data-toggle="collapse">
-                        <span class="glyphicon glyphicon-chevron-right"></span></a>
-                        <p class="hierarchy-item" id="IngredientClass-{{ ingredientclass.pk }}">{{ ingredientclass.name }}</p>                    
-
-                        <ul id="catlist_{{ ingredientclass.name }}" class="collapse">
-                        {% for category in ingredientclass.categories.all %}
-                            <li class="category-item">
-                                <a href="#sublist_{{ category.name }}" data-toggle="collapse">
-                                <span class="glyphicon glyphicon-chevron-right"></span></a>
-                                <p class="hierarchy-item" id="IngredientCategory-{{ category.pk }}-{{ ingredientclass.pk }}">
-                                    {{ category.name }}
-                                </p>
-                            
-                                <ul id="sublist_{{ category.name }}" class="collapse">
-                                {% for subcategory in category.subcategories.all %}
-                                    <li class="subcategory-item">
-                                        <span class="glyphicon glyphicon-minus"></span>
-                                        <p id="IngredientSubcategory-{{ subcategory.pk }}-{{ category.pk }}-{{ ingredientclass.pk }}"
-                                        class="hierarchy-item">{{ subcategory.name }}</p>
-                                    </li>
-                                {% endfor %}
-                                </ul>
-                            </li>
-                        {% endfor %}
-                        </ul>
-
+        <div class="panel-body">
+          <ul class="hierarchy-list class-list">
+          {% for ingredientclass in ingredientclasses %}
+            <li class="class-item">
+              <a href="#catlist_{{ ingredientclass.name }}" data-toggle="collapse">
+                <span class="glyphicon glyphicon-chevron-right hierarchy-icon"></span>
+              </a>
+              
+              <p class="hierarchy-item" id="IngredientClass-{{ ingredientclass.pk }}">
+                {{ ingredientclass.name }}
+              </p>                    
+              
+              <ul class="collapse in hierarchy-list" id="catlist_{{ ingredientclass.name }}">
+              {% for category in ingredientclass.categories.all %}
+                <li class="category-item">
+                  <a href="#sublist_{{ category.name }}" data-toggle="collapse">
+                    <span class="glyphicon glyphicon-chevron-right hierarchy-icon"></span>
+                  </a>
+                  
+                  <p class="hierarchy-item" id="IngredientCategory-{{ category.pk }}-{{ ingredientclass.pk }}">
+                    {{ category.name }}
+                  </p>
+                
+                  <ul class="collapse in hierarchy-list" id="sublist_{{ category.name }}">
+                  {% for subcategory in category.subcategories.all %}
+                    <li class="subcategory-item">
+                      <span class="glyphicon glyphicon-minus hierarchy-icon"></span>
+                      <p id="IngredientSubcategory-{{ subcategory.pk }}-{{ category.pk }}-{{ ingredientclass.pk }}"
+                      class="hierarchy-item">{{ subcategory.name }}</p>
                     </li>
-                {% endfor %}
-                </ul>
-
-                <h2>Actions</h2>
-                <hr>
-                <a class="btn btn-primary" href="{% url 'ingredient-class-create' %}">New Class</a>
-                <a href="{% url 'ingredient-category-create' %}" class="btn btn-primary">New Category</a>
-                <a href="{% url 'ingredient-subcategory-create' %}" class="btn btn-primary">New Subcategory</a>
-                <button type="button" class="btn btn-default modal-button" data-toggle="modal" data-target="#modal">Open Modal</button>
-            </div>
+                  {% endfor %}
+                  </ul>
+                </li>
+              {% endfor %}
+              </ul>
+            </li>
+          {% endfor %}
+          </ul>
         </div>
+      </div>
 
-        <div class="col-xs-7 col-md-9 border-right">
-            <div class="row">
-                <div class="details nodisp">
-                    <h2>Detail
-                    <a class="btn btn-default inline-button" href="">
-                        <span class="glyphicon glyphicon-pencil"></span>
-                    </a>
-                    </h2>
-                    <hr>
-
-                    <p id="detail-name">Name: </p>
-                    <p id="detail-description">Description: </p>
-                                        
-                    <p id="detail-class">Parent Class: </p>
-                    <p id="detail-category">Parent Category: </p>
-                    
-                    <a id="detail-wiki" href="{{ ingredientclass.wiki_url }}"><i class="fa fa-wikipedia-w"></i></a>
-
-                    <img id="detail-image" class="img-responsive" src="" alt="" >
-                </div>
-            </div>
+      <div class="panel panel-default">
+        <div class="panel-heading">
+          <h2 class="panel-title">Actions</h2>
         </div>
+        <div class="panel-body">
+          <button type="button" class="btn btn-default modal-button" data-toggle="modal" 
+            data-target="#modalForm" data-url="{% url 'ingredient-class-create' %}"
+            id="modal-create-IngredientClass">New Class</button>
+          <button type="button" class="btn btn-default modal-button" data-toggle="modal" 
+            data-target="#modalForm" data-url="{% url 'ingredient-category-create' %}"
+            id="modal-create-IngredientCategory">New Category</button>
+          <button type="button" class="btn btn-default modal-button" data-toggle="modal" 
+            data-target="#modalForm" data-url="{% url 'ingredient-subcategory-create' %}"
+            id="modal-create-IngredientSubcategory">New Subcategory</button>
+        </div>
+      </div>
     </div>
+  </div>
+
+  <div class="col-xs-7 col-md-9 border-right">
+    <div class="row">
+      <div class="panel panel-default details nodisp">
+        <div class="panel-heading">
+          <h2 class="panel-title pull-left" id="detail-name">
+            <span></span>
+            <small></small>
+          </h2>
+          <div class="btn-toolbar pull-right subtitle-buttons">
+            <button type="button" class="btn btn-default modal-button" id="modal-edit"
+              data-toggle="modal" data-target="#modalForm" data-url="" >
+              <span class="glyphicon glyphicon-pencil"></span>
+            </button>
+            <button type="button" class="btn btn-default modal-button" id="modal-create-child" 
+              data-toggle="modal" data-target="#modalForm" data-url="">
+              <span class="glyphicon glyphicon-plus"></span>
+            </button>
+          </div>
+          <div class="clearfix"></div>
+        </div>
+        <div class="panel-body">
+          <p id="detail-description"></p>                   
+          <p id="detail-class"></p>
+          <p id="detail-category"></p>
+          
+          <a id="detail-wiki" href="{{ ingredientclass.wiki_url }}"><i class="fa fa-wikipedia-w"></i></a>
+          <img id="detail-image" class="img-responsive" src="" alt="" >
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
 
 {% endblock content %}
