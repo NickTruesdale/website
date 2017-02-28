@@ -20,9 +20,7 @@
         <div class="row">
             <div class="card">
                 <h2>Classification</h2>
-                <p>Class: <a href="{{ ingredient.subcategory.category.ingredient_class.get_absolute_url }}">
-                    {{ ingredient.subcategory.category.ingredient_class.name }}
-                </a></p>
+                <p>Class: {{ ingredient.subcategory.category.ingredient_class.name }}</p>
                 <p>Category: {{ ingredient.subcategory.category.name }}</p>
                 <p>Subcategory: {{ ingredient.subcategory.name }}</p>
             </div>

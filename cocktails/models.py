@@ -10,6 +10,7 @@ Drink --> Recipe(s) --> Ingredient(s)
 from django.db import models
 from django.core.validators import MinValueValidator, MaxValueValidator
 from django.core.urlresolvers import reverse
+from django.db.models.fields.related import ManyToManyField
 
 from django_countries.fields import CountryField
 from localflavor.us.us_states import STATE_CHOICES
@@ -78,6 +79,25 @@ class BaseObjectAmazon(models.Model):
 
     class Meta:
         abstract = True
+
+
+class ToDictMixin(object):
+    ''' Adds a method which converts an instance into a dictionary, keeping
+    intact many-to-many and non-editable fields
+    '''
+
+    def to_dict(self):
+        opts = self._meta
+        data = {}
+        for f in opts.concrete_fields + opts.many_to_many:
+            if isinstance(f, ManyToManyField):
+                if self.pk is None:
+                    data[f.name] = []
+                else:
+                    data[f.name] = list(f.value_from_object(self).values_list('pk', flat=True))
+            else:
+                data[f.name] = f.value_from_object(self)
+        return data
 
 
 # ----------------
@@ -213,7 +233,7 @@ class IngredientSubcategory(BaseObjectWithImage):
 # -----------
 # MAIN TABLES
 # -----------
-class Ingredient(BaseObjectWithImage, BaseObjectAmazon):
+class Ingredient(ToDictMixin, BaseObjectWithImage, BaseObjectAmazon):
     '''
     A single cocktail ingredient, which includes spirits, liqueurs, juices, sweeteners, garnishes, etc.
     '''
@@ -299,7 +319,7 @@ class Recipe(BaseObjectWithImage):
 
 class RecipeIngredient(models.Model):
     '''
-    Line item in a recipe (ingredient + ammount).
+    Line item in a recipe (ingredient + amount).
     In SQL, this becomes the joining table for the many-to-many relationship.
     '''
 
@@ -311,3 +331,6 @@ class RecipeIngredient(models.Model):
 
     def __str__(self):
         return self.recipe.name + ' - ' + self.ingredient.name
+
+
+

@@ -1,50 +1,103 @@
 {% extends 'cocktails/base_title.html' %}
 
 {% block content %}
+  <div class="modal" id="modalForm" data-url=""></div>
+
   <div class="row">
-    <div class="ingredient-title">
-      <h1>Home Page</h1><hr>
-    </div>
-  </div>
+    <div class="col-xs-5 col-md-4 border-right">
+       
+        <!-- Cocktails -->
+       <div class="row">
+        <div class="panel panel-default">
+          <div class="panel-heading">
+            <h2 class="panel-title pull-left">Cocktails</h2>
+            <a href="" class="btn btn-default pull-right">
+              <span class="glyphicon glyphicon-plus"></span>
+            </a>
+            <div class="clearfix"></div>
+          </div>
+          <div class="panel-body">
+            <div class="search-container">
+              <a href="">
+                <span class="glyphicon glyphicon-search"></span>
+              </a>
+              <input type="text">
+            </div>
+          </div>
+        </div>
+      </div>
 
-  <div class="ingredient-details col-xs-12 col-md-6">      
-    <div class="row">
-      <div class="card">
-        <h2>Links</h2>
-        <p>
-          New Ingredient: 
-          <a class="page-link" href="{% url 'ingredient-create' %}">
-            <span class="glyphicon glyphicon-leaf"></span>
-          </a>
-        </p>
-        <p>
-          New Recipe: 
-          <a class="page-link" href="/">
-            <span class="glyphicon glyphicon-glass"></span>
-          </a>
-        </p>
-        <p>
-          Categorization Browser:
-          <a class="page-link" href="{% url 'ingredient-categorization-browser' %}">
-            <span class="glyphicon glyphicon-th-list"></span>
-          </a>    
-        </p>
-        <p>
-          Ingredient Search:
-          <a class="page-link" href="{% url 'ingredient-search' %}">
-            <span class="glyphicon glyphicon-search"></span>
-          </a> 
-        </p>
+      <!-- Ingredients -->
+      <div class="row">
+        <div class="panel panel-default">
+          <div class="panel-heading">
+            <h2 class="panel-title pull-left">Ingredients</h2>
+            <button type="button" class="btn btn-default modal-button pull-right" data-toggle="modal" 
+            data-target="#modalForm" data-url="{% url 'ingredient-create' %}"
+            id="modal-create-Ingredient">
+              <span class="glyphicon glyphicon-plus"></span>
+            </button>
+            <div class="clearfix"></div>
+          </div>
+          <div class="panel-body">
+            <div class="search-container">
+              <span class="glyphicon glyphicon-search search-button" data-model="Ingredient"></span>
+              <input type="text">
+            </div>
+            <p class="advanced-search">Advanced search</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Other -->
+      <div class="row">
+        <div class="panel panel-default">
+          <div class="panel-heading">
+            <h2 class="panel-title">Other</h2>
+          </div>
+          <div class="panel-body">
+            <a class="page-link" href="{% url 'ingredient-categorization-browser' %}">
+                Ingredient Categorization Browser
+            </a> 
+            <p>Distilleries and Manufacturers</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+
+
+    <!-- Main Column -->
+    <div class="col-xs-7 col-md-8 border-right">
+      <div class="row">
+        
+        <!-- About the site -->
+        <div class="panel panel-default about-panel">
+          <div class="panel-heading">
+            <h2 class="panel-title">About the site</h2>
+          </div>
+          <div class="panel-body home-text">
+            <p>Welcome to One Last Word, a website dedicated to the home mixologist! 
+            </p>
+            <p>This site provides a searchable database of recipes and ingredients from a number of reputable sources, so that you don't have to go digging through books and blogs for that one Zombie recipe that uses Don's Spices #1 instead of #2.  
+            </p>
+          </div>
+        </div>
+
+        <!-- Search Results -->
+        <div class="panel panel-default search-panel">
+          <div class="panel-heading">
+            <h2 class="panel-title" id="search-panel-title">
+              <span>Results</span>
+              <small></small>
+            </h2>
+          </div>
+          <div class="panel-body">
+            <div class="results-container"></div>
+          </div>
+        </div>
       </div>
     </div>
   </div>
 
-  <div class="ingredient-details col-xs-12 col-md-6">      
-    <div class="row">
-      <div class="card">
-        <h2>Other stuff</h2>
-        <p>We'll put more stuff here...</p>
-      </div>
-    </div>
-  </div>
 {% endblock %}

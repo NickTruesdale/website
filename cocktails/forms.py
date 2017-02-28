@@ -70,6 +70,9 @@ class IngredientForm(forms.ModelForm):
             'amazon_url_us',
             'amazon_url_uk',
         )
+        widgets = {
+          'description': forms.Textarea(attrs={'rows': 4}),
+        }
 
 
 class IngredientSearchForm(forms.Form):

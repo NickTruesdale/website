@@ -107,7 +107,7 @@ class IngredientForeignKeyView(CreateUpdateMixin, PopupEditMixin, ShortDescripti
     template_name = 'cocktails/ingredient_foreign_key_edit.html'
 
 
-class IngredientCategorizationModalView(CreateUpdateMixin, ShortDescriptionMixin, JsonFormMixin, UpdateView):
+class IngredientModalView(CreateUpdateMixin, ShortDescriptionMixin, JsonFormMixin, UpdateView):
     ''' Single class which handle the mixins using the modal edit form '''
     template_name = 'cocktails/modal_edit_form.html'
 
@@ -117,6 +117,25 @@ class IngredientCategorizationModalView(CreateUpdateMixin, ShortDescriptionMixin
 # ---------
 class Home(TemplateView):
     template_name = 'cocktails/home.html'
+
+    def get(self, request, *args, **kwargs):
+        if request.is_ajax():
+            response = []
+
+            model_type = request.GET.get('model')
+            search_text = request.GET.get('search_text')
+
+            model = apps.get_model('cocktails', model_type)
+            query = model.objects.filter(name__contains=search_text)
+
+            for item in query:
+                D = item.to_dict()
+                D['detail_url'] = item.get_absolute_url()
+                response.append(D)
+
+            return JsonResponse(response, safe=False)
+        else:
+            return super().get(request, *args, **kwargs)
 
 
 # ----------
@@ -133,8 +152,15 @@ class IngredientSearch(TemplateView):
 
     def get(self, request, *args, **kwargs):
         if request.is_ajax():
-            response = serializers.serialize('json', Ingredient.objects.all())
-            return HttpResponse(response, content_type="application/json")
+            response = []
+            ingredients = Ingredient.objects.all()
+
+            for ingredient in ingredients:
+                D = ingredient.to_dict()
+                D['detail_url'] = ingredient.get_absolute_url()
+                response.append(D)
+
+            return JsonResponse(response, safe=False)
         else:
             return super().get(request, *args, **kwargs)
 
@@ -143,9 +169,8 @@ class IngredientDetail(DetailView):
     model = Ingredient
 
 
-class IngredientEdit(CreateUpdateMixin, UpdateView):
+class IngredientEdit(IngredientModalView):
     model = Ingredient
-    template_name = 'cocktails/ingredient_edit.html'
     form_class = IngredientForm
 
 
@@ -189,17 +214,17 @@ class IngredientCategorization(TemplateView):
             return super().get(request, *args, **kwargs)
 
 
-class IngredientClassEdit(IngredientCategorizationModalView):
+class IngredientClassEdit(IngredientModalView):
     model = IngredientClass
     fields = ['name', 'description', 'image_url', 'wiki_url']
 
 
-class IngredientCategoryEdit(IngredientCategorizationModalView):
+class IngredientCategoryEdit(IngredientModalView):
     model = IngredientCategory
     fields = ['name', 'ingredient_class', 'description', 'image_url', 'wiki_url']
 
 
-class IngredientSubcategoryEdit(IngredientCategorizationModalView):
+class IngredientSubcategoryEdit(IngredientModalView):
     model = IngredientSubcategory
     fields = ['name', 'category', 'description', 'image_url', 'wiki_url']
 

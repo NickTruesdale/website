@@ -3,7 +3,7 @@
 // BASE.HTML //
 //---------- */
 body {
-
+    min-width: 320px;
 }
 
 a {
@@ -138,6 +138,43 @@ a {
 }
 
 /*
+Home page
+*/
+.home-text p {
+    text-align: justify;
+}
+
+.search-container {
+    position: relative;
+}
+
+.search-container span {
+    position: absolute;
+    margin-top: 7px;
+    margin-left: 10px;
+    color: #555;
+    z-index: 1;
+}
+
+.search-container input {
+    width: 100%;
+    height: 30px;
+    padding-left: 30px;
+    white-space: nowrap;
+}
+
+.advanced-search {
+    display: block;
+    margin: 8px 0 0 2px;
+    cursor: pointer;
+    text-decoration: underline;
+}
+
+.search-panel {
+    display: none;
+}
+
+/*
 Things we're actually using in the Ingredient Category Browser
 */
 
@@ -247,4 +284,14 @@ New form class (these should be adopted in all other forms)
     padding: 8px 0 3px 8px;
     clear: left;
     text-align: left;
+}
+
+
+/* Styling for ingredient and recipe search */
+.ingredient-result {
+    border: solid #ccc 1px;
+    border-radius: 3px;
+
+    margin: 5px;
+    padding: 8px;
 }
