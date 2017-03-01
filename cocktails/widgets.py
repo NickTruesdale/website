@@ -26,6 +26,11 @@ class CreateNewButtonWidget(forms.Widget):
 
         return mark_safe(u''.join(output))
 
+        ##self.fields['ingredient_class'].widget = CreateNewButtonWidget(
+        #    self.fields['ingredient_class'].widget,
+        #    reverse('ingredient-class-create')
+        #)##
+
     @property
     def is_hidden(self):
         return self.widget.is_hidden

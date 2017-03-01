@@ -1,58 +1,112 @@
 {% extends 'cocktails/base_title.html' %}
 {% load staticfiles %}
+{% load widget_tweaks %}
+{% load cocktail_templates %}
 
 {% block content %}
-    <div class="row">
-        <div class="ingredient-title">
-            <h1>{{ ingredient.name }}</h1>
-            <a class="btn btn-default" href="{% url 'ingredient-update' pk=ingredient.pk %}">
-                <span class="glyphicon glyphicon-pencil"></span>
-            </a>
-            <hr>
-        </div>
-    </div>
-
-    <div class="ingredient-image col-xs-6 col-md-4">
-        <img src="{{ ingredient.image_url }}" alt="" class="img-responsive">
-    </div>
     
-    <div class="ingredient-details col-xs-6 col-md-4">      
-        <div class="row">
-            <div class="card">
-                <h2>Classification</h2>
-                <p>Class: {{ ingredient.subcategory.category.ingredient_class.name }}</p>
-                <p>Category: {{ ingredient.subcategory.category.name }}</p>
-                <p>Subcategory: {{ ingredient.subcategory.name }}</p>
-            </div>
-        </div>
+<div class="row">
+  <div class="page-title">
+  {% if ingredient.name %}
+    <h1>{{ ingredient.name }}</h1>
+  {% else %}
+    <h1>Ingredient Detail</h1>
+  {% endif %}
+    <div>
+      <span class="btn btn-default" id="ingredient-edit-button"><i class="fa fa-pencil fa-lg"></i></span>
+      <span class="btn btn-default hide" id="ingredient-submit-button"><i class="fa fa-check fa-lg"></i></span>
+      <span class="btn btn-default hide" id="ingredient-cancel-button"><i class="fa fa-times fa-lg"></i></span>
+    </div>
+    <hr>
+  </div>
+</div>
 
-        <div class="row">
-            <div class="card links">
-                <h2>Links</h2>
-                <a href="{{ ingredient.wiki_url }}"><i class="fa fa-wikipedia-w"></i></a>
-                <a href="{{ ingredinet.amazon_url_us }}"><i class="fa fa-amazon"></i></a>
-                <a href="{{ ingredient.amazon_url_uk }}">
-                    <i class="fa fa-amazon"></i><img class="amazon-flag" src="{% static 'flags/gb.gif' %}">
-                </a>
-            </div>
+<div class="row">
+  <div class="col-xs-5 col-lg-4">
+    <div class="row">
+      <div class="" id="ingredient-image-panel">
+        <div class="panel-heading hide" id="ingredient-image-header">
+          <h2 class="panel-title">Image</h2>
         </div>
+        <div class="panel-body" id="ingredient-image-container">
+          <div class="hide" id="ingredient-image-edit">
+            {{ form.image_url.label_tag }} 
+            {{ form.image_url }}
+            <ul class="field-errors" id="field-errors-{{ form.description.html_name }}"></ul>
+            <label>Preview:</label>
+          </div>
+          <img src="{{ ingredient.image_url }}" alt="" class="img-responsive">
+        </div>
+      </div>
     </div>
-        
-    <div class="ingredient-details col-xs-6 col-md-4">
-        <div class="row">
-            <div class="card">
-                <h2>Origin</h2>
-                <p>Distillery: {{ ingredient.distillery.name }}</p>
-                <p>Manufacturer: {{ ingredient.manufacturer.name }}</p>
-            </div>
+  </div>
+
+  <div class="col-xs-7 col-lg-4 col-middle">
+    <div class="row">
+      <div class="panel panel-default">
+        <div class="panel-heading">
+          <h2 class="panel-title">Details</h2>
         </div>
-        
-        <div class="row">
-            <div class="card">
-                <h2>Specs</h2>
-                <p>Alcohol: {{ ingredient.abv }}%</p>
-            </div>
+        <div class="panel-body">
+          {{ form.name.label_tag }} {{ form.name|add_class:"text-field no-edit"|attr:"readonly" }}
+          <ul class="field-errors" id="field-errors-{{ form.name.html_name }}"></ul>
+
+          {{ form.description.label_tag }} 
+          {{ form.description|add_class:"ingredient-description no-edit"|attr:"readonly" }}
+          <ul class="field-errors" id="field-errors-{{ form.description.html_name }}"></ul>
+
+          <a href="{{ ingredient.wiki_url }}"><i class="fa fa-wikipedia-w"></i></a>
+          <a href="{{ ingredient.amazon_url_us }}"><i class="fa fa-amazon"></i></a>
+          <a href="{{ ingredient.amazon_url_uk }}">
+            <i class="fa fa-amazon"></i>
+            <img class="amazon-flag" src="{% static 'flags/gb.gif' %}">
+          </a>
         </div>
+      </div>
+
+      <div class="panel panel-default">
+        <div class="panel-heading">
+          <h2 class="panel-title">Specs</h2>
+        </div>
+        <div class="panel-body">
+          {{ form.abv.label_tag }} 
+          {{ form.abv|add_class:"text-field no-edit"|attr:"readonly" }}
+          <ul class="field-errors" id="field-errors-{{ form.abv.html_name }}"></ul>
+        </div>
+      </div>
     </div>
+  </div>
+
+  <div class="col-xs-7 col-lg-4 col-right">
+     
+      <!-- Categorization -->
+     <div class="row">
+      <div class="panel panel-default">
+        <div class="panel-heading">
+          <h2 class="panel-title">Categorization</h2>
+        </div>
+        <div class="panel-body">
+          {% read_only_choice form.ingredient_class %}
+          {% read_only_choice form.ingredient_category %}
+          {% read_only_choice form.subcategory %}
+        </div>
+      </div>
+      
+      <div class="panel panel-default">
+        <div class="panel-heading">
+          <h2 class="panel-title">Source</h2>
+        </div>
+        <div class="panel-body">
+          {% read_only_choice form.distillery %}
+          {% read_only_choice form.manufacturer %}
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
 
 {% endblock %}
+
+{% block scripts %}
+<script type="text/javascript" src="{% static 'js/ingredient-detail.js' %}"></script> 
+{% endblock scripts %}

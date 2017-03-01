@@ -28,12 +28,15 @@
         <script type="text/javascript" src="https://use.fontawesome.com/8d39786910.js"></script>
 
         {% block head %}
-        {% endblock %}
+        {% endblock head %}
     </head>
     <body>
         {% block basecontent %}
         {% endblock basecontent %}
 
         <script type="text/javascript" src="{% static 'js/cocktails.js' %}"></script> 
+
+        {% block scripts %}
+        {% endblock scripts %}
     </body>
 </html>

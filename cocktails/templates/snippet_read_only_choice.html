@@ -1,0 +1,9 @@
+{% load widget_tweaks %}
+
+<div class="choice-container" id="choice-container-{{ model_name }}">
+    <label>{{ label }}:</label>
+    <p class="choice-value" id="choice-value-{{ model_name }}">{{ value }}</p>
+    
+    {{ field|add_class:"select-field no-edit"|attr:"disabled" }}
+    <ul class="field-errors" id="field-errors-{{ model_name }}"></ul>
+</div>

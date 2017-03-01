@@ -72,74 +72,45 @@ a {
 // Ingredients //
 //------------ */
 
-.ingredient-title {
-    text-align: center;
-    padding: 0
+.ingredient-description {
+    width: 100%;
 }
 
-.ingredient-title h1 {
-    font-size: 30pt;
-    font-family: 'Oswald';
-    font-weight: 700;
+.no-edit {
+    border: 1px solid rgba(0,0,0,0);
+    background: rgba(0,0,0,0);
+    padding-left: 0;
+    resize: none;
+}
+
+select.no-edit {
+    display: none;
+}
+
+.choice-value {
     display: inline-block;
-    margin: 0 0 18px 0;
 }
 
-.ingredient-title a {
-    display: inline-block;
-    margin-left: 8px;
-    margin-bottom: 18px;
+
+#ingredient-submit-button {
+    padding: 6px 10px;
 }
 
-.ingredient-title hr {
-    margin-top: 0;
+.fa-check-square, .fa-check {
+    color: #008000;
 }
 
-.ingredient-image {
-    padding-top: 10px;
-}
-
-.row {
-    padding: 10px 10px;
-}
-
-.card {
-    padding: 10px;
-    border-width: 2px;
-    border-style: solid;
-    border-radius: 4px;
-}
-
-.card h2 {
-    font-size: 16pt;
-    margin: 0;
-    margin-bottom: 16px;
-}
-
-.ingredient-form form textarea, .ingredient-form form input {
-    width:100%;
-}
-
-.save {
-    float: right;
-}
-
-.add-another {
-    margin: 4px;
-}
-
-.links {
-    font-size: 18pt;
-}
-
-.links a {
-    display: inline-block;
-    margin-right: 20px;
+.fa-times {
+    color: #a00000;
 }
 
 /*
 Home page
 */
+.row {
+    padding: 10px 10px;
+}
+
 .home-text p {
     text-align: justify;
 }
@@ -154,6 +125,7 @@ Home page
     margin-left: 10px;
     color: #555;
     z-index: 1;
+    cursor: pointer;
 }
 
 .search-container input {
@@ -179,6 +151,7 @@ Things we're actually using in the Ingredient Category Browser
 */
 
 .page-title {
+    position: relative;
     text-align: center;
     margin: 0;
 }
@@ -187,6 +160,15 @@ Things we're actually using in the Ingredient Category Browser
     font-size: 30pt;
     font-family: 'Oswald';
     font-weight: 700;
+    display: inline-block;
+}
+
+.page-title div {
+    display: inline-block;
+    position: absolute;
+    padding-top: 30px;
+    padding-left: 16px;
+    height: 100%;
 }
 
 .page-title hr {

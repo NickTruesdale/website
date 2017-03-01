@@ -141,32 +141,14 @@ class Home(TemplateView):
 # ----------
 # Ingredient
 # ----------
-class IngredientSearch(TemplateView):
-    ''' Search window for ingredients '''
-    template_name = 'cocktails/ingredient_search.html'
-
-    def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
-        context['form'] = IngredientSearchForm()
-        return context
-
-    def get(self, request, *args, **kwargs):
-        if request.is_ajax():
-            response = []
-            ingredients = Ingredient.objects.all()
-
-            for ingredient in ingredients:
-                D = ingredient.to_dict()
-                D['detail_url'] = ingredient.get_absolute_url()
-                response.append(D)
-
-            return JsonResponse(response, safe=False)
-        else:
-            return super().get(request, *args, **kwargs)
-
-
-class IngredientDetail(DetailView):
+class IngredientDetail(CreateUpdateMixin, UpdateView):
     model = Ingredient
+    template_name = 'cocktails/ingredient_detail.html'
+    form_class = IngredientForm
+
+    def get_form(self, form_class=None):
+        form = super().get_form(form_class)
+        return form
 
 
 class IngredientEdit(IngredientModalView):
@@ -254,5 +236,3 @@ ingredient_cat = IngredientCategorization.as_view()
 ingredient_class_edit = IngredientClassEdit.as_view()
 ingredient_category_edit = IngredientCategoryEdit.as_view()
 ingredient_subcategory_edit = IngredientSubcategoryEdit.as_view()
-
-ingredient_search = IngredientSearch.as_view()

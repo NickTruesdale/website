@@ -310,7 +310,7 @@ class Recipe(BaseObjectWithImage):
       Shaking type (i.e. shaken, stirred, swizzled, whipped, etc.)
     '''
 
-    # Link to the cokctail object that this is a recipe for
+    # Link to the cocktail object that this is a recipe for
     cocktail = models.ForeignKey(Cocktail, related_name='recipes', on_delete=models.CASCADE)
 
     # Glassware and hardware
@@ -331,6 +331,3 @@ class RecipeIngredient(models.Model):
 
     def __str__(self):
         return self.recipe.name + ' - ' + self.ingredient.name
-
-
-

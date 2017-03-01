@@ -25,26 +25,21 @@ class IngredientForm(forms.ModelForm):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
 
-        # Create custom wrapper widgets for the Foreign Key fields
-        self.fields['ingredient_class'].widget = CreateNewButtonWidget(
-            self.fields['ingredient_class'].widget,
-            reverse('ingredient-class-create')
+        # Populate the class and category fields
+        if self.instance:
+            category = self.instance.subcategory.category
+            self.fields['ingredient_category'].initial = category
+            self.fields['ingredient_class'].initial = category.ingredient_class
+
+        # Sort ModelChoiceFields alphabetically
+        self.fields['manufacturer'].choices = sorted(
+            self.fields['manufacturer'].choices,
+            key=lambda x: x[1]
         )
-        self.fields['ingredient_category'].widget = CreateNewButtonWidget(
-            self.fields['ingredient_category'].widget,
-            reverse('ingredient-category-create')
-        )
-        self.fields['subcategory'].widget = CreateNewButtonWidget(
-            self.fields['subcategory'].widget,
-            reverse('ingredient-subcategory-create')
-        )
-        self.fields['distillery'].widget = CreateNewButtonWidget(
-            self.fields['distillery'].widget,
-            reverse('distillery-create')
-        )
-        self.fields['manufacturer'].widget = CreateNewButtonWidget(
-            self.fields['manufacturer'].widget,
-            reverse('manufacturer-create')
+
+        self.fields['distillery'].choices = sorted(
+            self.fields['distillery'].choices,
+            key=lambda x: x[1]
         )
 
     class Media:
