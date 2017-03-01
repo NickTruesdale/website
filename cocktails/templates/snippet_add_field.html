@@ -1,4 +1,4 @@
-<div class="field-container">
+<div class="field-wrapper">
     <label class="field-label" for="id_{{ html_name }}">{{ label }}:</label>
     <div class="field-container">
         {{ form_field }}
@@ -9,5 +9,5 @@
         </span>
         {% endif %}
     </div>
-    <ul class="errors" id="errors-{{ html_name }}"></ul>
+    <ul class="field-errors" id="field-errors-{{ html_name }}"></ul>
 </div>

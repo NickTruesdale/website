@@ -24,7 +24,7 @@ class SingleReadOnlyMixin(object):
     def create_output(self, name, value):
         readonly_attrs = {
             'class': 'readonly-field',
-            'id': 'readonly-' + name,
+            'id': 'readonly_' + name,
         }
         return format_html('<p{}>', flatatt(readonly_attrs)) + str(value) + '</p>'
 
@@ -45,7 +45,7 @@ class SelectWithReadOnly(SingleReadOnlyMixin, forms.widgets.Select):
     def create_output(self, name, value):
         readonly_attrs = {
             'class': 'readonly-field',
-            'id': 'readonly-' + name,
+            'id': 'readonly_' + name,
             'data-pk': str(value),
         }
 

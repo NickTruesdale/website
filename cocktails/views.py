@@ -150,6 +150,16 @@ class IngredientDetail(CreateUpdateMixin, UpdateView):
         form = super().get_form(form_class)
         return form
 
+    def form_valid(self, form):
+        ''' Return a JSON response with the pk and a success message '''
+        instance = form.save()
+        response = {'success': 1, 'pk': instance.pk}
+        return JsonResponse(response)
+
+    def form_invalid(self, form):
+        response = {'success': 0, 'errors': form.errors}
+        return JsonResponse(response)
+
 
 class IngredientEdit(IngredientModalView):
     model = Ingredient
