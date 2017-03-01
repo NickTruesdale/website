@@ -4,7 +4,7 @@ from django.urls import reverse
 
 from .models import Ingredient, IngredientClass, IngredientCategory, IngredientSubcategory
 from .models import Distillery, Manufacturer
-from .widgets import CreateNewButtonWidget
+from .widgets import InputWithReadOnly, TextareaWithReadOnly, SelectWithReadOnly
 
 
 # ---------------
@@ -16,14 +16,20 @@ class IngredientForm(forms.ModelForm):
     # Fields for class and category
     ingredient_class = forms.ModelChoiceField(
         queryset=IngredientClass.objects.all(),
+        widget=SelectWithReadOnly,
     )
 
     ingredient_category = forms.ModelChoiceField(
         queryset=IngredientCategory.objects.all(),
+        widget=SelectWithReadOnly,
     )
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
+
+        print(self.fields['name'].widget.attrs)
+        for key, value in self.fields['name'].widget.attrs.items():
+            print('%s - %s', (key, value))
 
         # Populate the class and category fields
         if self.instance:
@@ -66,7 +72,17 @@ class IngredientForm(forms.ModelForm):
             'amazon_url_uk',
         )
         widgets = {
-          'description': forms.Textarea(attrs={'rows': 4}),
+            'subcategory': SelectWithReadOnly(),
+            'distillery': SelectWithReadOnly(),
+            'manufacturer': SelectWithReadOnly(),
+            'name': InputWithReadOnly(),
+            'description': TextareaWithReadOnly(attrs={'rows': 4}),
+            'image_url': InputWithReadOnly(),
+            'abv':  InputWithReadOnly(),
+            'own_url': InputWithReadOnly(),
+            'wiki_url': InputWithReadOnly(),
+            'amazon_url_us': InputWithReadOnly(),
+            'amazon_url_uk': InputWithReadOnly(),
         }
 
 

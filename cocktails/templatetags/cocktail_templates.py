@@ -1,4 +1,6 @@
 from django import template
+from django.urls import reverse
+
 register = template.Library()
 
 
@@ -27,4 +29,19 @@ def read_only_choice(form_field):
         'field': form_field,
     }
 
+    return context
+
+
+@register.inclusion_tag('snippet_add_field.html')
+def add_new_field(form_field, create_url=None):
+    ''' Shortcut for adding a label, field and error list '''
+    if create_url:
+        create_url = reverse(create_url)
+
+    context = {
+        'label': form_field.label,
+        'form_field': form_field,
+        'html_name': form_field.html_name,
+        'create_url': create_url,
+    }
     return context

@@ -1,27 +1,20 @@
 
-// Add click handlers when the page loads
-$(function() {
+// Page initialization (before document ready)
+var initialize = function() 
+{
+    // Set editable fields to hidden
+    $('.editable-field, .editable-button').addClass('hide');
 
-    // Edit, Submit and Cancel handlers
-    $('#ingredient-edit-button').click(ingredientEditHandler);
-    $('#ingredient-submit-button').click(ingredientSubmitHandler);
-    $('#ingredient-cancel-button').click(ingredientCancelHandler);
-});
+    // Show the page
+    $('.page-wrapper').removeClass('hide');
+};
 
+// Click handler for the edit button. 
 var ingredientEditHandler = function()
 {
-    // Make all fields editable
-    $('.no-edit').removeClass('no-edit');
-
-    // Swap the text and selects for the ChoiceFields
-    $('.choice-container p').addClass('hide');
-    $('.choice-container select').prop('disabled', false);
-
-    // Make the normal fields (input and textfield) not readonly
-    $('.text-field').prop('readonly', false);
-
-    // Show the new item icons for each ModelChoiceField
-    
+    // convert fields to edit mode
+    $('.readonly-field').addClass('hide');
+    $('.editable-field, .editable-button').removeClass('hide');
 
     // Enable the submit and cancel buttons
     $('#ingredient-submit-button, #ingredient-cancel-button').removeClass('hide');
@@ -35,30 +28,25 @@ var ingredientEditHandler = function()
 
 var ingredientSubmitHandler = function()
 {
+    // Convert everything back to readonly mode
+    makeReadOnly();
 
+    // Copy new data into readonly elements
 };
 
 var ingredientCancelHandler = function()
 {
+    // Convert everything back to readonly mode
     makeReadOnly();
-};
 
-var makeEditable = function()
-{
-
+    // Copy original data from readonly elements back into editable ones
 };
 
 var makeReadOnly = function() 
 {
-    // Make all fields editable
-    $('.text-field, .select-field, .ingredient-description').addClass('no-edit');
-
-    // Swap the text and selects for the ChoiceFields
-    $('.choice-container p').removeClass('hide');
-    $('.choice-container select').prop('disabled', true);
-
-    // Make the normal fields (input and textfield) not readonly
-    $('.text-field').prop('readonly', true);
+    // convert fields to readonly mode
+    $('.readonly-field').removeClass('hide');
+    $('.editable-field, .editable-button').addClass('hide');
 
     // Hide the submit and cancel buttons
     $('#ingredient-submit-button, #ingredient-cancel-button').addClass('hide');
@@ -69,3 +57,14 @@ var makeReadOnly = function()
     $('#ingredient-image-header').addClass('hide');
     $('#ingredient-image-edit').addClass('hide');
 };
+
+// Add click handlers when the page loads
+$(function() {
+    // Initialize the page
+    initialize();
+
+    // Edit, Submit and Cancel handlers
+    $('#ingredient-edit-button').click(ingredientEditHandler);
+    $('#ingredient-submit-button').click(ingredientSubmitHandler);
+    $('#ingredient-cancel-button').click(ingredientCancelHandler);
+});

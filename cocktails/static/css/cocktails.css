@@ -72,31 +72,61 @@ a {
 // Ingredients //
 //------------ */
 
+.field-wrapper {
+
+}
+
+.field-label {
+    float: left;
+    padding-top: 2px;
+    padding-right: 6px;
+}
+
+.field-container {
+    overflow: hidden;
+    display: block;
+    margin: 0;
+}
+
+.readonly-field {
+    width: 100%;
+    padding-top: 2px;
+    margin-bottom: 4px;
+}
+
+.field-container input, .field-container textarea {
+    width: 100%;
+    padding-left: 2px;
+}
+
+.field-container select {
+    padding: 2px 0 3px 1px;
+    margin-bottom: 3px;
+}
+
+.field-container select option {
+    margin-top: 4px;
+}
+
+.editable-button {
+    margin: 2px 0 0 2px;
+    display: inline-block;
+    cursor: pointer;
+}
+
 .ingredient-description {
     width: 100%;
 }
 
-.no-edit {
-    border: 1px solid rgba(0,0,0,0);
-    background: rgba(0,0,0,0);
-    padding-left: 0;
-    resize: none;
-}
+#ingredient-image-panel {
 
-select.no-edit {
-    display: none;
 }
-
-.choice-value {
-    display: inline-block;
-}
-
 
 #ingredient-submit-button {
     padding: 6px 10px;
 }
 
-.fa-check-square, .fa-check {
+.fa-check-square, .fa-check, .fa-plus {
     color: #008000;
 }
 
