@@ -9,6 +9,7 @@ var initialize = function()
     $('.page-wrapper').removeClass('hide');
 };
 
+// Click handler for the submit button
 var detailSubmitHandler = function()
 {
     // Prepare vars
@@ -50,9 +51,6 @@ var detailSubmitHandler = function()
             }
         },
     });
-
-    // Convert everything back to readonly mode
-    
 };
 
 // Click handler for the edit button. 
@@ -73,6 +71,7 @@ var detailEditHandler = function()
     $('#detail-image-edit').removeClass('hide');
 };
 
+// Click handler for the cancel button
 var detailCancelHandler = function()
 {
     // Convert everything back to readonly mode
@@ -86,6 +85,7 @@ var detailCancelHandler = function()
     $('.field-errors').removeClass('alert alert-danger');
 };
 
+// Hide all editable fields and return to readonly mode
 var makeReadOnly = function() 
 {
     // convert fields to readonly mode
@@ -103,28 +103,36 @@ var makeReadOnly = function()
     $('#detail-image-edit').addClass('hide');
 };
 
+// Applied to a field with the readonly-field class, this will find its
+// corresponding editable field and copy the value over to it
 var copyFromReadonly = function()
 {
     var id = '#' + $(this).attr('id');
     var srcId = id.replace('id', 'readonly');
     var elementType = $(this).get(0).tagName.toLowerCase();
 
+    // For normal fields, we can just copy the text
     if (elementType === 'input' || elementType === 'textarea')
     {
         $(id).val($(srcId).text());
     }
+    // For select fields, we need to copy the ID instead of the value 
     else if (elementType === 'select')
     {
         $(id).val($(srcId).attr('data-pk'));
     }
 };
 
+// Applied to a field with the editable-field class, this will find its
+// corresponding readonly field and copy the value over to it
 var copyFromEditable = function()
 {
     var id = '#' + $(this).attr('id');
     var srcId = id.replace('readonly', 'id');
     var pk = $(this).attr('data-pk');
 
+    // Only select fields have the data-pk parameter, which stores the ID used in 
+    // the foreign key select so we can access the name of that object
     if (pk)
     {
         console.log(pk);
@@ -132,6 +140,7 @@ var copyFromEditable = function()
         $(id).attr('data-pk', pk);
         $(id).text($(srcId + " option[value='" + pk + "']").text());
     }
+    // For all other field types, we can just copy the value
     else
     {
         $(id).text($(srcId).val());

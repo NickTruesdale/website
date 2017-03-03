@@ -16,12 +16,15 @@ $(function() {
     $(document).on('click', '.form-submit', formSubmitHandler);
 });
 
+// When a modal button is clicked, pass that button's URL over to the 
+// modal window so it knows which form to get
 var modalPreload = function()
 {
     targetUrl = $(this).attr('data-url');
     $('#modalForm').attr('data-url', targetUrl);
 };
 
+// GET the form for the modal window on load
 var modalLoad = function() 
 {
     var modal = $(this);
@@ -34,6 +37,8 @@ var modalLoad = function()
     });   
 };
 
+// Make a server call with the search information, and process the list of 
+// search results that is returned
 var ingredientSearchHandler = function()
 {
     var idx, div, pk, fields;
@@ -73,13 +78,10 @@ var ingredientSearchHandler = function()
                 $('.results-container').append(div);
             }
         },
-
-        error: function(xhr, errmsg, err) {
-
-        },
     });
 };
 
+// This is the form submission AJAX POST for all of the modal forms
 var formSubmitHandler = function() 
 {
     var key, idx, listItem, message;
@@ -140,6 +142,8 @@ var formSubmitHandler = function()
     });
 };
 
+// Load an ingredient class, category or subcategory object when one of these is
+// clicked in the categorization browser page.
 var hierarchyClickHandler = function() 
 {
     // Parse out the model and the pk
@@ -214,21 +218,13 @@ var hierarchyClickHandler = function()
     });
 };
 
-var getHierarchyItemName = function(modelType, pk)
-{
-    var id = '#' + modelType + '-' + pk;
-    var name = '';
-    var hierarchyItem = $(id);
-
-    if (hierarchyItem.length > 0) name = hierarchyItem.text();
-    return name;
-};
-
+// Return the name of a class given its ID
 var getParentClass = function(id)
 {
     return $('#' + id).closest('.class-item').find('.hierarchy-item:first').text();
 };
 
+// Return the name of a category given its ID
 var getParentCategory = function(id)
 {
     return $('#' + id).closest('.category-item').find('.hierarchy-item:first').text();

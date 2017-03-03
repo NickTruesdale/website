@@ -4,13 +4,22 @@ Module: cocktails.models.py
 Description: This module contains models necessary to describe
 cocktail recipes. This is a hierarchy of objects:
 
-Drink --> Recipe(s) --> Ingredient(s)
+Cocktail --> Recipe(s) --> Ingredient(s)
+
+The link between recipes and ingredients is many-to-many, so there
+is an intermediate RecipeIngredient mtable that links the two and
+also contains the amount and units for the ingredient.
+
+There are also a number of auxiliary tables used for categorizing
+cocktails and ingredients, as well as holding things like manufacturers,
+brand info, book or blog sources, etc.
 '''
 
 from django.db import models
+from django.db.models.fields.related import ManyToManyField
+
 from django.core.validators import MinValueValidator, MaxValueValidator
 from django.core.urlresolvers import reverse
-from django.db.models.fields.related import ManyToManyField
 
 from django_countries.fields import CountryField
 from localflavor.us.us_states import STATE_CHOICES
@@ -338,6 +347,7 @@ class Cocktail(ToDictMixin, BaseObjectWithImage):
 
     def get_absolute_url(self):
         return reverse('cocktail-detail', kwargs={'pk': self.pk})
+
 
 class Recipe(BaseObjectWithImage):
     '''

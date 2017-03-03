@@ -1,6 +1,4 @@
 from django import forms
-from django.conf import settings
-from django.urls import reverse
 
 from .models import Ingredient, IngredientClass, IngredientCategory, IngredientSubcategory
 from .models import Brand, Distillery, Manufacturer, Cocktail
@@ -70,6 +68,7 @@ class IngredientForm(forms.ModelForm):
 
 
 class BrandForm(forms.ModelForm):
+    ''' Main Brand model form '''
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -115,6 +114,7 @@ class BrandForm(forms.ModelForm):
 
 
 class CocktailForm(forms.ModelForm):
+    ''' Main Cocktail model form '''
 
     class Meta:
         model = Cocktail
