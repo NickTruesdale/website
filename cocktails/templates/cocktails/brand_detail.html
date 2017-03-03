@@ -5,15 +5,13 @@
 
 {% block content %}
 
-    
 <div class="page-wrapper hide">
   <div class="modal" id="modalForm" data-url=""></div>
-
 
   <form class="form" action="{{ request.path }}">{% csrf_token %}
     <div class="row">
       <div class="page-title">
-        <h1>Ingredient Detail</h1>
+        <h1>Brand Detail</h1>
         <div>
           <span class="btn btn-default" id="detail-edit-button"><i class="fa fa-pencil fa-lg"></i></span>
           <span class="btn btn-default hide" id="detail-submit-button"><i class="fa fa-check fa-lg"></i></span>
@@ -35,7 +33,7 @@
                 {% add_new_field form.image_url %}
                 <label>Preview:</label>
               </div>
-              <img src="{{ ingredient.image_url }}" alt="" class="img-responsive">
+              <img src="{{ brand.image_url }}" alt="" class="img-responsive">
             </div>
           </div>
         </div>
@@ -50,22 +48,30 @@
             <div class="panel-body">
               {% add_new_field form.name %}
               {% add_new_field form.description %}
-    
-              <a href="{{ ingredient.wiki_url }}"><i class="fa fa-wikipedia-w"></i></a>
-              <a href="{{ ingredient.amazon_url_us }}"><i class="fa fa-amazon"></i></a>
-              <a href="{{ ingredient.amazon_url_uk }}">
-                <i class="fa fa-amazon"></i>
-                <img class="amazon-flag" src="{% static 'flags/gb.gif' %}">
-              </a>
+              
+
+              {% add_new_field form.city %}
+              {% add_new_field form.us_state %}
+              {% add_new_field form.country %}
             </div>
           </div>
     
           <div class="panel panel-default">
             <div class="panel-heading">
-              <h2 class="panel-title">Specs</h2>
+              <h2 class="panel-title pull-left" id="detail-name">Products</h2>
+              <div class="btn-toolbar pull-right">
+                <a class="btn btn-default" href="" >
+                  <span><i class="fa fa-plus"></i></span>
+                </a>
+              </div>
+              <div class="clearfix"></div>
             </div>
             <div class="panel-body">
-              {% add_new_field form.abv %}
+              <ul class="ingredient-list">
+              {% for ingredient in brand.ingredients.all %}
+                <li>{{ ingredient.name }}</li>        
+              {% endfor %}
+              </ul>
             </div>
           </div>
         </div>
@@ -73,33 +79,55 @@
     
       <div class="col-xs-7 col-lg-4 col-right">
          
-          <!-- Categorization -->
+          <!-- Manufacturer -->
          <div class="row">
           <div class="panel panel-default">
             <div class="panel-heading">
-              <h2 class="panel-title">Categorization</h2>
+              <h2 class="panel-title pull-left" id="detail-name">Manufacturer</h2>
+              <div class="btn-toolbar pull-right">
+              {% if brand.manufacturer %}
+                <button type="button" class="btn btn-default modal-button" id="modal-edit"
+                  data-toggle="modal" data-target="#modalForm" 
+                  data-url="{% url 'manufacturer-update' brand.manufacturer.id %}" >
+                  <i class="fa fa-pencil"></i>
+                </button>
+              {% endif %}              
+              </div>
+              <div class="clearfix"></div>
             </div>
             <div class="panel-body">
-              {% add_new_field form.ingredient_class "ingredient-subcategory-create" %}
-              {% add_new_field form.ingredient_category "ingredient-category-create" %}
-              {% add_new_field form.subcategory "ingredient-class-create" %}
+              {% add_new_field form.manufacturer "manufacturer-create" %}
             </div>
           </div>
           
+          <!-- Distillery -->
           <div class="panel panel-default">
             <div class="panel-heading">
-              <h2 class="panel-title">Source</h2>
+              <h2 class="panel-title">Distillery</h2>
             </div>
             <div class="panel-body">
-              {% add_new_field form.brand %}
-              
-              {% if ingredient.brand %}
-              <label class="field_label derived">Distillery</label>
-              <p class="derived">{{ ingredient.brand.distillery.name }}</p>
+              {% add_new_field form.distillery "distillery-create" %}
 
-              <label class="field_label derived">Manufacturer</label>
-              <p class="derived">{{ ingredient.brand.manufacturer.name }}</p>
-              {% endif %}
+              <div class="field-wrapper">
+                <label class="field-label derived derived-label">Description:</label>
+                <div class="field-container">
+                  <p class="derived derived-field">{{ brand.distillery.description }}</p>
+                </div>
+              </div>
+
+              <div class="field-wrapper">
+                <label class="field-label derived derived-label">Location:</label>
+                <div class="field-container">
+                  <p class="derived derived-field location-field">
+                    {{ brand.distillery.city }}, 
+                    {% if brand.distillery.us_state %}
+                      {{ brand.distillery.us_state }}, 
+                    {% endif %}
+                    {{ brand.distillery.country }}
+                  </p>
+                </div>
+              </div> 
+
             </div>
           </div>
         </div>

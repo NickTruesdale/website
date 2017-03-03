@@ -4,6 +4,8 @@ from django.forms.utils import flatatt
 from django.utils.safestring import mark_safe
 from django.utils.html import format_html
 
+from django_countries.widgets import CountrySelectWidget
+
 
 class SingleReadOnlyMixin(object):
     ''' This mixin overrides the render method of widgets, adding a <p>
@@ -41,6 +43,24 @@ class TextareaWithReadOnly(SingleReadOnlyMixin, forms.widgets.Textarea):
 
 class SelectWithReadOnly(SingleReadOnlyMixin, forms.widgets.Select):
     ''' This overrides the Select widget to have an additional text field '''
+
+    def create_output(self, name, value):
+        readonly_attrs = {
+            'class': 'readonly-field',
+            'id': 'readonly_' + name,
+            'data-pk': str(value),
+        }
+
+        label = 'None'
+        for choice_value, choice_label in self.choices:
+            if value == choice_value:
+                label = choice_label
+
+        return format_html('<p{}>', flatatt(readonly_attrs)) + label + '</p>'
+
+
+class CountrySelectWithReadOnly(SingleReadOnlyMixin, CountrySelectWidget):
+    ''' This overrides the CountrySelect widget to have an additional text field '''
 
     def create_output(self, name, value):
         readonly_attrs = {

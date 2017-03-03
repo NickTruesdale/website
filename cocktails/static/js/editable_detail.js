@@ -9,24 +9,7 @@ var initialize = function()
     $('.page-wrapper').removeClass('hide');
 };
 
-// Click handler for the edit button. 
-var ingredientEditHandler = function()
-{
-    // convert fields to edit mode
-    $('.readonly-field').addClass('hide');
-    $('.editable-field, .editable-button').removeClass('hide');
-
-    // Enable the submit and cancel buttons
-    $('#ingredient-submit-button, #ingredient-cancel-button').removeClass('hide');
-    $('#ingredient-edit-button').addClass('hide');
-
-    // Change the image to a URLField
-    $('#ingredient-image-panel').addClass('panel panel-default');
-    $('#ingredient-image-header').removeClass('hide');
-    $('#ingredient-image-edit').removeClass('hide');
-};
-
-var ingredientSubmitHandler = function()
+var detailSubmitHandler = function()
 {
     // Prepare vars
     var form = $(this).closest('form');
@@ -72,7 +55,25 @@ var ingredientSubmitHandler = function()
     
 };
 
-var ingredientCancelHandler = function()
+// Click handler for the edit button. 
+var detailEditHandler = function()
+{
+    // convert fields to edit mode
+    $('.derived').addClass('hide');
+    $('.readonly-field').addClass('hide');
+    $('.editable-field, .editable-button').removeClass('hide');
+
+    // Enable the submit and cancel buttons
+    $('#detail-submit-button, #detail-cancel-button').removeClass('hide');
+    $('#detail-edit-button').addClass('hide');
+
+    // Change the image to a URLField
+    $('#detail-image-panel').addClass('panel panel-default');
+    $('#detail-image-header').removeClass('hide');
+    $('#detail-image-edit').removeClass('hide');
+};
+
+var detailCancelHandler = function()
 {
     // Convert everything back to readonly mode
     makeReadOnly();
@@ -88,17 +89,18 @@ var ingredientCancelHandler = function()
 var makeReadOnly = function() 
 {
     // convert fields to readonly mode
+    $('.derived').removeClass('hide');
     $('.readonly-field').removeClass('hide');
     $('.editable-field, .editable-button').addClass('hide');
 
     // Hide the submit and cancel buttons
-    $('#ingredient-submit-button, #ingredient-cancel-button').addClass('hide');
-    $('#ingredient-edit-button').removeClass('hide');
+    $('#detail-submit-button, #detail-cancel-button').addClass('hide');
+    $('#detail-edit-button').removeClass('hide');
 
     // Remove image edit fields
-    $('#ingredient-image-panel').removeClass('panel panel-default');
-    $('#ingredient-image-header').addClass('hide');
-    $('#ingredient-image-edit').addClass('hide');
+    $('#detail-image-panel').removeClass('panel panel-default');
+    $('#detail-image-header').addClass('hide');
+    $('#detail-image-edit').addClass('hide');
 };
 
 var copyFromReadonly = function()
@@ -142,7 +144,7 @@ $(function() {
     initialize();
 
     // Edit, Submit and Cancel handlers
-    $('#ingredient-edit-button').click(ingredientEditHandler);
-    $('#ingredient-submit-button').click(ingredientSubmitHandler);
-    $('#ingredient-cancel-button').click(ingredientCancelHandler);
+    $('#detail-edit-button').click(detailEditHandler);
+    $('#detail-submit-button').click(detailSubmitHandler);
+    $('#detail-cancel-button').click(detailCancelHandler);
 });

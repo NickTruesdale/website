@@ -18,9 +18,7 @@
           </div>
           <div class="panel-body">
             <div class="search-container">
-              <a href="">
-                <span class="glyphicon glyphicon-search"></span>
-              </a>
+              <span class="glyphicon glyphicon-search search-button" data-model="Cocktail"></span>
               <input type="text">
             </div>
           </div>
@@ -49,6 +47,27 @@
         </div>
       </div>
 
+      <div class="row">
+        <div class="panel panel-default">
+          <div class="panel-heading">
+            <h2 class="panel-title pull-left">Brands</h2>
+            <button type="button" class="btn btn-default modal-button pull-right" data-toggle="modal" 
+            data-target="#modalForm" data-url="{% url 'brand-create' %}"
+            id="modal-create-Ingredient">
+              <span class="glyphicon glyphicon-plus"></span>
+            </button>
+            <div class="clearfix"></div>
+          </div>
+          <div class="panel-body">
+            <div class="search-container">
+              <span class="glyphicon glyphicon-search search-button" data-model="Brand"></span>
+              <input type="text">
+            </div>
+            <p class="advanced-search">Advanced search</p>
+          </div>
+        </div>
+      </div>
+
       <!-- Other -->
       <div class="row">
         <div class="panel panel-default">
@@ -56,7 +75,7 @@
             <h2 class="panel-title">Other</h2>
           </div>
           <div class="panel-body">
-            <a class="page-link" href="{% url 'ingredient-categorization-browser' %}">
+            <a class="" href="{% url 'ingredient-categorization-browser' %}">
                 Ingredient Categorization Browser
             </a> 
             <p>Distilleries and Manufacturers</p>

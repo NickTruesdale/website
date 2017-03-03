@@ -5,15 +5,13 @@
 
 {% block content %}
 
-    
 <div class="page-wrapper hide">
   <div class="modal" id="modalForm" data-url=""></div>
-
 
   <form class="form" action="{{ request.path }}">{% csrf_token %}
     <div class="row">
       <div class="page-title">
-        <h1>Ingredient Detail</h1>
+        <h1>{{ form.name }}</h1>
         <div>
           <span class="btn btn-default" id="detail-edit-button"><i class="fa fa-pencil fa-lg"></i></span>
           <span class="btn btn-default hide" id="detail-submit-button"><i class="fa fa-check fa-lg"></i></span>
@@ -35,7 +33,7 @@
                 {% add_new_field form.image_url %}
                 <label>Preview:</label>
               </div>
-              <img src="{{ ingredient.image_url }}" alt="" class="img-responsive">
+              <img src="{{ cocktail.image_url }}" alt="" class="img-responsive">
             </div>
           </div>
         </div>
@@ -45,61 +43,45 @@
         <div class="row">
           <div class="panel panel-default">
             <div class="panel-heading">
-              <h2 class="panel-title">Details</h2>
+              <h2 class="panel-title">Description</h2>
             </div>
             <div class="panel-body">
               {% add_new_field form.name %}
               {% add_new_field form.description %}
-    
-              <a href="{{ ingredient.wiki_url }}"><i class="fa fa-wikipedia-w"></i></a>
-              <a href="{{ ingredient.amazon_url_us }}"><i class="fa fa-amazon"></i></a>
-              <a href="{{ ingredient.amazon_url_uk }}">
-                <i class="fa fa-amazon"></i>
-                <img class="amazon-flag" src="{% static 'flags/gb.gif' %}">
-              </a>
-            </div>
-          </div>
-    
-          <div class="panel panel-default">
-            <div class="panel-heading">
-              <h2 class="panel-title">Specs</h2>
-            </div>
-            <div class="panel-body">
-              {% add_new_field form.abv %}
             </div>
           </div>
         </div>
       </div>
     
       <div class="col-xs-7 col-lg-4 col-right">
-         
-          <!-- Categorization -->
-         <div class="row">
+        <div class="row">
           <div class="panel panel-default">
             <div class="panel-heading">
-              <h2 class="panel-title">Categorization</h2>
+              <h2 class="panel-title">Specs</h2>
             </div>
             <div class="panel-body">
-              {% add_new_field form.ingredient_class "ingredient-subcategory-create" %}
-              {% add_new_field form.ingredient_category "ingredient-category-create" %}
-              {% add_new_field form.subcategory "ingredient-class-create" %}
+              {% add_new_field form.category %}
+              {% add_new_field form.base_spirit %}
+              {% add_new_field form.wiki_url %}
             </div>
           </div>
-          
+        </div>
+      </div>
+    </div>
+
+    <div class="row">
+      <div class="col-xs-5 col-lg-4">
+        <div class="row">
           <div class="panel panel-default">
             <div class="panel-heading">
-              <h2 class="panel-title">Source</h2>
+              <h2 class="panel-title">Recipes</h2>
             </div>
             <div class="panel-body">
-              {% add_new_field form.brand %}
-              
-              {% if ingredient.brand %}
-              <label class="field_label derived">Distillery</label>
-              <p class="derived">{{ ingredient.brand.distillery.name }}</p>
-
-              <label class="field_label derived">Manufacturer</label>
-              <p class="derived">{{ ingredient.brand.manufacturer.name }}</p>
-              {% endif %}
+              <ul id="recipe-list">
+              {% for recipe in cocktail.recipes.all  %}
+                <li>{{ recipe.name }}</li>
+              {% endfor %}
+              </ul>
             </div>
           </div>
         </div>

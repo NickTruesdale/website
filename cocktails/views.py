@@ -1,5 +1,4 @@
-from django.views.generic import TemplateView, UpdateView, DetailView, CreateView
-from django.shortcuts import render, get_object_or_404, redirect
+from django.views.generic import TemplateView, UpdateView
 from django.utils.html import escape, escapejs
 from django.apps import apps
 from django.http import HttpResponse, JsonResponse
@@ -7,8 +6,9 @@ from django.core import serializers
 from django import forms
 
 from .models import Ingredient, IngredientSubcategory, IngredientCategory, IngredientClass
-from .models import Distillery, Manufacturer
-from .forms import IngredientForm, IngredientSearchForm
+from .models import Brand, Distillery, Manufacturer
+from .models import Cocktail, CocktailCategory
+from .forms import IngredientForm, BrandForm, CocktailForm
 
 
 # -----------------------
@@ -130,6 +130,8 @@ class Home(TemplateView):
 
             for item in query:
                 D = item.to_dict()
+                print(D)
+
                 D['detail_url'] = item.get_absolute_url()
                 response.append(D)
 
@@ -138,31 +140,26 @@ class Home(TemplateView):
             return super().get(request, *args, **kwargs)
 
 
+# --------
+# Cocktail
+# --------
+class CocktailDetail(JsonFormMixin, CreateUpdateMixin, UpdateView):
+    model = Cocktail
+    template_name = 'cocktails/cocktail_detail.html'
+    form_class = CocktailForm
+
+
+class CocktailCategoryEdit(IngredientModalView):
+    model = CocktailCategory
+    fields = ['name', 'description', 'image_url', 'wiki_url']
+
+
 # ----------
 # Ingredient
 # ----------
-class IngredientDetail(CreateUpdateMixin, UpdateView):
+class IngredientDetail(JsonFormMixin, CreateUpdateMixin, UpdateView):
     model = Ingredient
     template_name = 'cocktails/ingredient_detail.html'
-    form_class = IngredientForm
-
-    def get_form(self, form_class=None):
-        form = super().get_form(form_class)
-        return form
-
-    def form_valid(self, form):
-        ''' Return a JSON response with the pk and a success message '''
-        instance = form.save()
-        response = {'success': 1, 'pk': instance.pk}
-        return JsonResponse(response)
-
-    def form_invalid(self, form):
-        response = {'success': 0, 'errors': form.errors}
-        return JsonResponse(response)
-
-
-class IngredientEdit(IngredientModalView):
-    model = Ingredient
     form_class = IngredientForm
 
 
@@ -221,20 +218,18 @@ class IngredientSubcategoryEdit(IngredientModalView):
     fields = ['name', 'category', 'description', 'image_url', 'wiki_url']
 
 
-class DistilleryDetail(DetailView):
-    model = Distillery
+class BrandDetail(JsonFormMixin, CreateUpdateMixin, UpdateView):
+    model = Brand
+    template_name = 'cocktails/brand_detail.html'
+    form_class = BrandForm
 
 
-class DistilleryEdit(IngredientForeignKeyView):
+class DistilleryEdit(IngredientModalView):
     model = Distillery
     fields = ['name', 'description', 'country', 'us_state', 'city', 'image_url', 'wiki_url', 'own_url']
 
 
-class ManufacturerDetail(DetailView):
-    model = Manufacturer
-
-
-class ManufacturerEdit(IngredientForeignKeyView):
+class ManufacturerEdit(IngredientModalView):
     model = Manufacturer
     fields = ['name', 'description', 'country', 'us_state', 'city', 'image_url', 'wiki_url', 'own_url']
 
@@ -242,7 +237,17 @@ class ManufacturerEdit(IngredientForeignKeyView):
 # ---------------
 # Class Instances
 # ---------------
+ingredient_detail = IngredientDetail.as_view()
+
 ingredient_cat = IngredientCategorization.as_view()
 ingredient_class_edit = IngredientClassEdit.as_view()
 ingredient_category_edit = IngredientCategoryEdit.as_view()
 ingredient_subcategory_edit = IngredientSubcategoryEdit.as_view()
+
+brand_detail = BrandDetail.as_view()
+
+distillery_edit = DistilleryEdit.as_view()
+manufacturer_edit = ManufacturerEdit.as_view()
+
+cocktail_detail = CocktailDetail.as_view()
+cocktail_category_edit = CocktailCategoryEdit.as_view()

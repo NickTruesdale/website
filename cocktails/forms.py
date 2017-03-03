@@ -3,8 +3,8 @@ from django.conf import settings
 from django.urls import reverse
 
 from .models import Ingredient, IngredientClass, IngredientCategory, IngredientSubcategory
-from .models import Distillery, Manufacturer
-from .widgets import InputWithReadOnly, TextareaWithReadOnly, SelectWithReadOnly
+from .models import Brand, Distillery, Manufacturer, Cocktail
+from .widgets import InputWithReadOnly, TextareaWithReadOnly, SelectWithReadOnly, CountrySelectWithReadOnly
 
 
 # ---------------
@@ -27,10 +27,6 @@ class IngredientForm(forms.ModelForm):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
 
-        print(self.fields['name'].widget.attrs)
-        for key, value in self.fields['name'].widget.attrs.items():
-            print('%s - %s', (key, value))
-
         # Populate the class and category fields
         if self.instance:
             category = self.instance.subcategory.category
@@ -38,20 +34,9 @@ class IngredientForm(forms.ModelForm):
             self.fields['ingredient_class'].initial = category.ingredient_class
 
         # Sort ModelChoiceFields alphabetically
-        self.fields['manufacturer'].choices = sorted(
-            self.fields['manufacturer'].choices,
+        self.fields['brand'].choices = sorted(
+            self.fields['brand'].choices,
             key=lambda x: x[1]
-        )
-
-        self.fields['distillery'].choices = sorted(
-            self.fields['distillery'].choices,
-            key=lambda x: x[1]
-        )
-
-    class Media:
-        css = {'all': (settings.STATIC_URL + 'admin/css/widgets.css',)}
-        js = (
-            settings.STATIC_URL + 'admin/js/admin/RelatedObjectLookups.js',
         )
 
     class Meta:
@@ -63,8 +48,7 @@ class IngredientForm(forms.ModelForm):
             'name',
             'description',
             'image_url',
-            'distillery',
-            'manufacturer',
+            'brand',
             'abv',
             'own_url',
             'wiki_url',
@@ -73,8 +57,7 @@ class IngredientForm(forms.ModelForm):
         )
         widgets = {
             'subcategory': SelectWithReadOnly(),
-            'distillery': SelectWithReadOnly(),
-            'manufacturer': SelectWithReadOnly(),
+            'brand': SelectWithReadOnly(),
             'name': InputWithReadOnly(),
             'description': TextareaWithReadOnly(attrs={'rows': 4}),
             'image_url': InputWithReadOnly(),
@@ -83,6 +66,73 @@ class IngredientForm(forms.ModelForm):
             'wiki_url': InputWithReadOnly(),
             'amazon_url_us': InputWithReadOnly(),
             'amazon_url_uk': InputWithReadOnly(),
+        }
+
+
+class BrandForm(forms.ModelForm):
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+
+        # Sort ModelChoiceFields alphabetically
+        self.fields['distillery'].choices = sorted(
+            self.fields['distillery'].choices,
+            key=lambda x: x[1]
+        )
+        self.fields['manufacturer'].choices = sorted(
+            self.fields['manufacturer'].choices,
+            key=lambda x: x[1]
+        )
+
+    class Meta:
+        model = Brand
+        fields = (
+            'name',
+            'description',
+            'year_established',
+            'country',
+            'us_state',
+            'city',
+            'own_url',
+            'image_url',
+            'wiki_url',
+            'distillery',
+            'manufacturer',
+        )
+        widgets = {
+            'name': InputWithReadOnly(),
+            'description': TextareaWithReadOnly(attrs={'rows': 4}),
+            'year_established': InputWithReadOnly(),
+            'country': CountrySelectWithReadOnly(),
+            'us_state': InputWithReadOnly(),
+            'city': InputWithReadOnly(),
+            'own_url': InputWithReadOnly(),
+            'image_url': InputWithReadOnly(),
+            'wiki_url': InputWithReadOnly(),
+            'distillery': SelectWithReadOnly(),
+            'manufacturer': SelectWithReadOnly(),
+        }
+
+
+class CocktailForm(forms.ModelForm):
+
+    class Meta:
+        model = Cocktail
+        fields = (
+            'name',
+            'description',
+            'category',
+            'base_spirit',
+            'image_url',
+            'wiki_url',
+        )
+        widgets = {
+            'name': InputWithReadOnly(),
+            'description': TextareaWithReadOnly(attrs={'rows': 4}),
+            'category': SelectWithReadOnly(),
+            'base_spirit': SelectWithReadOnly(),
+            'image_url': InputWithReadOnly(),
+            'wiki_url': InputWithReadOnly(),
         }
 
 

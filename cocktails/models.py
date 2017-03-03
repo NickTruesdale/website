@@ -17,8 +17,9 @@ from localflavor.us.us_states import STATE_CHOICES
 from localflavor.us.models import USStateField
 
 from djfractions.models import DecimalFractionField
-from decimal import Decimal
 
+from decimal import Decimal
+import datetime
 
 # ---------
 # Constants
@@ -95,6 +96,8 @@ class ToDictMixin(object):
                     data[f.name] = []
                 else:
                     data[f.name] = list(f.value_from_object(self).values_list('pk', flat=True))
+            elif isinstance(f, CountryField):
+                data[f.name] = self.country.code
             else:
                 data[f.name] = f.value_from_object(self)
         return data
@@ -179,11 +182,55 @@ class Distillery(BaseObjectWithImage):
         return self.name
 
 
+class Brand(ToDictMixin, BaseObjectWithImage):
+    ''' Parent object for ingredients, which links out to the distillery
+    and manufacturer
+    '''
+
+    # Location
+    country = CountryField()
+    us_state = USStateField(choices=STATE_CHOICES, null=True, blank=True)
+    city = models.CharField(max_length=NAME_LENGTH_LONG, null=True, blank=True)
+
+    # Other
+    year_established = models.PositiveIntegerField(
+        validators=[MaxValueValidator(datetime.datetime.now().year), MinValueValidator(1600)],
+    )
+
+    # Distillery and manufacturer
+    distillery = models.ForeignKey(
+        Distillery,
+        related_name='brands',
+        null=True,
+        blank=True,
+        on_delete=models.SET_NULL
+    )
+
+    manufacturer = models.ForeignKey(
+        Manufacturer,
+        related_name='brands',
+        null=True,
+        blank=True,
+        on_delete=models.SET_NULL
+    )
+
+    # Distillery's Website
+    own_url = models.URLField(
+        max_length=URL_LENGTH,
+        verbose_name='Own URL',
+        null=True,
+        blank=True
+    )
+
+    def get_absolute_url(self):
+        return reverse('brand-detail', kwargs={'pk': self.pk})
+
+    def __str__(self):
+        return self.name
+
+
 class CocktailCategory(BaseObjectWithImage):
     ''' Types of cocktails (Flip, fizz, julep, punch, etc.) '''
-
-    # How is this drink traditionally composed?
-    method = models.ForeignKey(PreparationMethod, related_name='categories', null=True, on_delete=models.SET_NULL)
 
     class Meta:
         verbose_name_plural = 'cocktail categories'
@@ -238,15 +285,8 @@ class Ingredient(ToDictMixin, BaseObjectWithImage, BaseObjectAmazon):
     A single cocktail ingredient, which includes spirits, liqueurs, juices, sweeteners, garnishes, etc.
     '''
     # Information about who makes this and where to buy it
-    distillery = models.ForeignKey(
-        Distillery,
-        related_name='ingredients',
-        null=True,
-        blank=True,
-        on_delete=models.SET_NULL
-    )
-    manufacturer = models.ForeignKey(
-        Manufacturer,
+    brand = models.ForeignKey(
+        Brand,
         related_name='ingredients',
         null=True,
         blank=True,
@@ -286,7 +326,7 @@ class Ingredient(ToDictMixin, BaseObjectWithImage, BaseObjectAmazon):
         return self.abv*2.0 or None
 
 
-class Cocktail(BaseObjectWithImage):
+class Cocktail(ToDictMixin, BaseObjectWithImage):
     '''
     High level class for a cocktail. Contains a list of recipes as
     well as general information on the drink.
@@ -296,6 +336,8 @@ class Cocktail(BaseObjectWithImage):
     # Base spirit is pulled from the ingredients table
     base_spirit = models.ForeignKey(Ingredient, related_name='cocktails', null=True, on_delete=models.SET_NULL)
 
+    def get_absolute_url(self):
+        return reverse('cocktail-detail', kwargs={'pk': self.pk})
 
 class Recipe(BaseObjectWithImage):
     '''

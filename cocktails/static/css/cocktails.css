@@ -73,7 +73,7 @@ a {
 //------------ */
 
 .field-wrapper {
-
+    overflow: auto;
 }
 
 .field-label {
@@ -88,7 +88,7 @@ a {
     margin: 0;
 }
 
-.readonly-field {
+.readonly-field, .derived-field {
     width: 100%;
     padding-top: 2px;
     margin-bottom: 4px;
@@ -109,21 +109,30 @@ a {
     margin-top: 4px;
 }
 
+#id_country {
+    width: 100%;
+    overflow: none; 
+}
+
+.country-select-flag {
+    display: none;
+}
+
 .editable-button {
     margin: 2px 0 0 2px;
     display: inline-block;
     cursor: pointer;
 }
 
-.ingredient-description {
-    width: 100%;
+.location-field {
+    white-space: normal;
 }
 
-#ingredient-image-panel {
+#detail-image-panel {
 
 }
 
-#ingredient-submit-button {
+#detail-submit-button {
     padding: 6px 10px;
 }
 
@@ -197,7 +206,7 @@ Things we're actually using in the Ingredient Category Browser
 .page-title div {
     display: inline-block;
     position: absolute;
-    padding-top: 30px;
+    padding-top: 28px;
     padding-left: 16px;
     height: 100%;
 }
