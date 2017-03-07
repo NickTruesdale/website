@@ -11,7 +11,11 @@
   <form class="form" action="{{ request.path }}">{% csrf_token %}
     <div class="row">
       <div class="page-title">
-        <h1>{{ form.name }}</h1>
+      {% if cocktail.name %}
+        <h1>{{ cocktail.name }}</h1>
+      {% else %}
+        <h1>New Cocktail</h1>    
+      {% endif %}  
         <div>
           <span class="btn btn-default" id="detail-edit-button"><i class="fa fa-pencil fa-lg"></i></span>
           <span class="btn btn-default hide" id="detail-submit-button"><i class="fa fa-check fa-lg"></i></span>
@@ -30,10 +34,10 @@
             </div>
             <div class="panel-body" id="detail-image-container">
               <div class="hide" id="detail-image-edit">
-                {% add_new_field form.image_url %}
+                {% add_field_modal form.image_url %}
                 <label>Preview:</label>
               </div>
-              <img src="{{ cocktail.image_url }}" alt="" class="img-responsive">
+              <img class="img-responsive" id="id_image" src="{{ cocktail.image_url }}" alt="">
             </div>
           </div>
         </div>
@@ -46,8 +50,8 @@
               <h2 class="panel-title">Description</h2>
             </div>
             <div class="panel-body">
-              {% add_new_field form.name %}
-              {% add_new_field form.description %}
+              {% add_field_modal form.name %}
+              {% add_field_modal form.description %}
             </div>
           </div>
         </div>
@@ -60,16 +64,16 @@
               <h2 class="panel-title">Specs</h2>
             </div>
             <div class="panel-body">
-              {% add_new_field form.category %}
-              {% add_new_field form.base_spirit %}
-              {% add_new_field form.wiki_url %}
+              {% add_field_modal form.category %}
+              {% add_field_modal form.base_spirit %}
+              {% add_field_modal form.wiki_url %}
             </div>
           </div>
         </div>
       </div>
     </div>
-
-    <div class="row">
+    <hr>
+    <div class="row derived">
       <div class="col-xs-5 col-lg-4">
         <div class="row">
           <div class="panel panel-default">

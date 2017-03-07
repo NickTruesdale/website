@@ -1,0 +1,14 @@
+<div class="field-wrapper">
+    <label class="field-label" id="field-label-{{ html_name }}" for="id_{{ html_name }}">
+        {{ label }}:
+    </label>
+    <div class="field-container">
+        {% if create_url %}
+        <a href="{{ create_url }}" class="editable-button">
+            <i class="fa fa-plus"></i>
+        </a>
+        {% endif %}
+        <div class="field-container">{{ form_field }}</div>
+    </div>
+    <ul class="field-errors" id="field-errors-{{ html_name }}"></ul>
+</div>

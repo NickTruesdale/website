@@ -32,8 +32,23 @@ def read_only_choice(form_field):
     return context
 
 
-@register.inclusion_tag('snippet_add_field.html')
-def add_new_field(form_field, create_url=None):
+@register.inclusion_tag('snippet_field_modal.html')
+def add_field_modal(form_field, modal_url=None):
+    ''' Shortcut for adding a label, field and error list '''
+    if modal_url:
+        modal_url = reverse(modal_url)
+
+    context = {
+        'label': form_field.label,
+        'form_field': form_field,
+        'html_name': form_field.html_name,
+        'modal_url': modal_url,
+    }
+    return context
+
+
+@register.inclusion_tag('snippet_field_external.html')
+def add_field_external(form_field, create_url=None):
     ''' Shortcut for adding a label, field and error list '''
     if create_url:
         create_url = reverse(create_url)

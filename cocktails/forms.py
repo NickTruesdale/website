@@ -25,13 +25,35 @@ class IngredientForm(forms.ModelForm):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
 
-        # Populate the class and category fields
-        if self.instance:
+        # Initialize categorization fields if the instance has a subcategory
+        if self.instance and self.instance.subcategory is not None:
+            # Populate the class and category fields
             category = self.instance.subcategory.category
             self.fields['ingredient_category'].initial = category
             self.fields['ingredient_class'].initial = category.ingredient_class
 
+            # Populate the picklists for category and subcategory
+            self.fields['ingredient_category'].queryset = IngredientCategory.objects.filter(
+                ingredient_class=category.ingredient_class)
+            self.fields['subcategory'].queryset = IngredientSubcategory.objects.filter(
+                category=category)
+
         # Sort ModelChoiceFields alphabetically
+        self.fields['ingredient_class'].choices = sorted(
+            self.fields['ingredient_class'].choices,
+            key=lambda x: x[1]
+        )
+
+        self.fields['ingredient_category'].choices = sorted(
+            self.fields['ingredient_category'].choices,
+            key=lambda x: x[1]
+        )
+
+        self.fields['subcategory'].choices = sorted(
+            self.fields['subcategory'].choices,
+            key=lambda x: x[1]
+        )
+
         self.fields['brand'].choices = sorted(
             self.fields['brand'].choices,
             key=lambda x: x[1]
@@ -103,7 +125,7 @@ class BrandForm(forms.ModelForm):
             'description': TextareaWithReadOnly(attrs={'rows': 4}),
             'year_established': InputWithReadOnly(),
             'country': CountrySelectWithReadOnly(),
-            'us_state': InputWithReadOnly(),
+            'us_state': SelectWithReadOnly(),
             'city': InputWithReadOnly(),
             'own_url': InputWithReadOnly(),
             'image_url': InputWithReadOnly(),

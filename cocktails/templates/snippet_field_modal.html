@@ -1,0 +1,15 @@
+<div class="field-wrapper" id="field-wrapper-{{ html_name }}">
+    <label class="field-label" id="field-label-{{ html_name }}" for="id_{{ html_name }}">
+        {{ label }}:
+    </label>
+    <div class="field-container">
+        {% if modal_url %}
+        <span class="modal-button editable-button" data-toggle="modal" 
+            data-target="#modalForm" data-url="{{ modal_url }}" tabindex="0">
+            <i class="fa fa-plus"></i>
+        </span>
+        {% endif %}
+        <div class="field-container">{{ form_field }}</div>
+    </div>
+    <ul class="field-errors" id="field-errors-{{ html_name }}"></ul>
+</div>

@@ -59,29 +59,35 @@ class JsonFormMixin(object):
     '''
 
     def get(self, request, *args, **kwargs):
-        ''' If the GET request has parameters corresponding to model properties,
-        we will try to preload the form with the correct value
+        ''' Improve get so we can load the form with initial values and
+        respond to AJAX requests.
         '''
-        self.object = self.get_object()
-        form_class = self.get_form_class()
+        if request.is_ajax():
+            return self.ajax_handler(request)
 
-        if self.object is None:
-            # Grab any valid initial values from the GET params
-            initial = {}
-            for key, value in request.GET.items():
-                if hasattr(self.model, key):
-                    initial[key] = value
-
-            form = form_class(initial=initial)
+        # If the GET request has parameters corresponding to model properties,
+        # we will try to preload the form with the correct value
         else:
-            form = self.get_form(form_class)
+            self.object = self.get_object()
+            form_class = self.get_form_class()
 
-        return self.render_to_response(self.get_context_data(form=form))
+            if self.object is None:
+                # Grab any valid initial values from the GET params
+                initial = {}
+                for key, value in request.GET.items():
+                    if hasattr(self.model, key):
+                        initial[key] = value
+
+                form = form_class(initial=initial)
+            else:
+                form = self.get_form(form_class)
+
+            return self.render_to_response(self.get_context_data(form=form))
 
     def form_valid(self, form):
         ''' Return a JSON response with the pk and a success message '''
         instance = form.save()
-        response = {'success': 1, 'pk': instance.pk}
+        response = {'success': 1, 'pk': instance.pk, 'detail_url': instance.get_absolute_url()}
         return JsonResponse(response)
 
     def form_invalid(self, form):
@@ -90,6 +96,10 @@ class JsonFormMixin(object):
 
     def verbose_name(self):
         return self.model._meta.verbose_name.title()
+
+    def ajax_handler(self, request):
+        # This is an empty stub we can override in inheriting classes
+        pass
 
 
 class ShortDescriptionMixin(object):
@@ -130,8 +140,6 @@ class Home(TemplateView):
 
             for item in query:
                 D = item.to_dict()
-                print(D)
-
                 D['detail_url'] = item.get_absolute_url()
                 response.append(D)
 
@@ -161,6 +169,26 @@ class IngredientDetail(JsonFormMixin, CreateUpdateMixin, UpdateView):
     model = Ingredient
     template_name = 'cocktails/ingredient_detail.html'
     form_class = IngredientForm
+
+    def ajax_handler(self, request):
+        filter_class = request.GET.get('filter_class')
+        filter_category = request.GET.get('filter_category')
+
+        response = {}
+        response['category_options'] = [{'value': '', 'text': '---------'}]
+        response['subcategory_options'] = [{'value': '', 'text': '---------'}]
+
+        if filter_class is not None:
+            cats = IngredientCategory.objects.filter(ingredient_class=filter_class).order_by('name')
+            for cat in cats:
+                response['category_options'].append({'value': cat.pk, 'text': cat.name})
+
+        if filter_category is not None:
+            subcats = IngredientSubcategory.objects.filter(category=filter_category).order_by('name')
+            for subcat in subcats:
+                response['subcategory_options'].append({'value': subcat.pk, 'text': subcat.name})
+
+        return JsonResponse(response, safe=False)
 
 
 # ------------------------

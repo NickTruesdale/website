@@ -11,8 +11,8 @@
         <div class="panel panel-default">
           <div class="panel-heading">
             <h2 class="panel-title pull-left">Cocktails</h2>
-            <a href="" class="btn btn-default pull-right">
-              <span class="glyphicon glyphicon-plus"></span>
+            <a href="{% url 'cocktail-create' %}" class="btn btn-default pull-right">
+              <i class="fa fa-plus"></i>
             </a>
             <div class="clearfix"></div>
           </div>
@@ -21,6 +21,7 @@
               <span class="glyphicon glyphicon-search search-button" data-model="Cocktail"></span>
               <input type="text">
             </div>
+            <p class="advanced-search">Advanced search</p>
           </div>
         </div>
       </div>
@@ -30,11 +31,9 @@
         <div class="panel panel-default">
           <div class="panel-heading">
             <h2 class="panel-title pull-left">Ingredients</h2>
-            <button type="button" class="btn btn-default modal-button pull-right" data-toggle="modal" 
-            data-target="#modalForm" data-url="{% url 'ingredient-create' %}"
-            id="modal-create-Ingredient">
-              <span class="glyphicon glyphicon-plus"></span>
-            </button>
+            <a href="{% url 'ingredient-create' %}" class="btn btn-default pull-right">
+              <i class="fa fa-plus"></i>
+            </a>
             <div class="clearfix"></div>
           </div>
           <div class="panel-body">
@@ -51,11 +50,9 @@
         <div class="panel panel-default">
           <div class="panel-heading">
             <h2 class="panel-title pull-left">Brands</h2>
-            <button type="button" class="btn btn-default modal-button pull-right" data-toggle="modal" 
-            data-target="#modalForm" data-url="{% url 'brand-create' %}"
-            id="modal-create-Ingredient">
-              <span class="glyphicon glyphicon-plus"></span>
-            </button>
+            <a href="{% url 'brand-create' %}" class="btn btn-default pull-right">
+              <i class="fa fa-plus"></i>
+            </a>
             <div class="clearfix"></div>
           </div>
           <div class="panel-body">

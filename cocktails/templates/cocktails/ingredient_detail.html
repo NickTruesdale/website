@@ -13,7 +13,11 @@
   <form class="form" action="{{ request.path }}">{% csrf_token %}
     <div class="row">
       <div class="page-title">
-        <h1>Ingredient Detail</h1>
+      {% if ingredient.name %}
+        <h1>{{ ingredient.name }}</h1>
+      {% else %}
+        <h1>New Ingredient</h1>    
+      {% endif %}  
         <div>
           <span class="btn btn-default" id="detail-edit-button"><i class="fa fa-pencil fa-lg"></i></span>
           <span class="btn btn-default hide" id="detail-submit-button"><i class="fa fa-check fa-lg"></i></span>
@@ -32,10 +36,10 @@
             </div>
             <div class="panel-body" id="detail-image-container">
               <div class="hide" id="detail-image-edit">
-                {% add_new_field form.image_url %}
+                {% add_field_modal form.image_url %}
                 <label>Preview:</label>
               </div>
-              <img src="{{ ingredient.image_url }}" alt="" class="img-responsive">
+              <img class="img-responsive" id="id_image" src="{{ ingredient.image_url }}" alt="">
             </div>
           </div>
         </div>
@@ -48,8 +52,8 @@
               <h2 class="panel-title">Details</h2>
             </div>
             <div class="panel-body">
-              {% add_new_field form.name %}
-              {% add_new_field form.description %}
+              {% add_field_modal form.name %}
+              {% add_field_modal form.description %}
     
               <a href="{{ ingredient.wiki_url }}"><i class="fa fa-wikipedia-w"></i></a>
               <a href="{{ ingredient.amazon_url_us }}"><i class="fa fa-amazon"></i></a>
@@ -65,7 +69,7 @@
               <h2 class="panel-title">Specs</h2>
             </div>
             <div class="panel-body">
-              {% add_new_field form.abv %}
+              {% add_field_modal form.abv %}
             </div>
           </div>
         </div>
@@ -80,9 +84,9 @@
               <h2 class="panel-title">Categorization</h2>
             </div>
             <div class="panel-body">
-              {% add_new_field form.ingredient_class "ingredient-subcategory-create" %}
-              {% add_new_field form.ingredient_category "ingredient-category-create" %}
-              {% add_new_field form.subcategory "ingredient-class-create" %}
+              {% add_field_modal form.ingredient_class "ingredient-class-create" %}
+              {% add_field_modal form.ingredient_category "ingredient-category-create" %}
+              {% add_field_modal form.subcategory "ingredient-subcategory-create" %}
             </div>
           </div>
           
@@ -91,7 +95,7 @@
               <h2 class="panel-title">Source</h2>
             </div>
             <div class="panel-body">
-              {% add_new_field form.brand %}
+              {% add_field_external form.brand "brand-create" %}
               
               {% if ingredient.brand %}
               <label class="field_label derived">Distillery</label>

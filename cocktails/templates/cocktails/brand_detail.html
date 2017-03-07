@@ -11,11 +11,19 @@
   <form class="form" action="{{ request.path }}">{% csrf_token %}
     <div class="row">
       <div class="page-title">
-        <h1>Brand Detail</h1>
+      {% if brand.name %}
+        <h1>{{ brand.name }}</h1>
+      {% else %}
+        <h1>New Brand</h1>    
+      {% endif %}  
+
         <div>
-          <span class="btn btn-default" id="detail-edit-button"><i class="fa fa-pencil fa-lg"></i></span>
-          <span class="btn btn-default hide" id="detail-submit-button"><i class="fa fa-check fa-lg"></i></span>
-          <span class="btn btn-default hide" id="detail-cancel-button"><i class="fa fa-times fa-lg"></i></span>
+          <span class="btn btn-default" id="detail-edit-button" data-toggle="tooltip"
+          title="Edit"><i class="fa fa-pencil fa-lg"></i></span>
+          <span class="btn btn-default hide" id="detail-submit-button" data-toggle="tooltip"
+          title="Submit"><i class="fa fa-check fa-lg"></i></span>
+          <span class="btn btn-default hide" id="detail-cancel-button" data-toggle="tooltip" 
+          title="Cancel"><i class="fa fa-times fa-lg"></i></span>
         </div>
         <hr>
       </div>
@@ -30,10 +38,10 @@
             </div>
             <div class="panel-body" id="detail-image-container">
               <div class="hide" id="detail-image-edit">
-                {% add_new_field form.image_url %}
+                {% add_field_modal form.image_url %}
                 <label>Preview:</label>
               </div>
-              <img src="{{ brand.image_url }}" alt="" class="img-responsive">
+              <img class="img-responsive" id="id_image" src="{{ brand.image_url }}" alt="">
             </div>
           </div>
         </div>
@@ -43,16 +51,23 @@
         <div class="row">
           <div class="panel panel-default">
             <div class="panel-heading">
+              <h2 class="panel-title">Description</h2>
+            </div>
+            <div class="panel-body">
+              {% add_field_modal form.name %}
+              {% add_field_modal form.description %}
+            </div>
+          </div>
+
+          <div class="panel panel-default">
+            <div class="panel-heading">
               <h2 class="panel-title">Details</h2>
             </div>
             <div class="panel-body">
-              {% add_new_field form.name %}
-              {% add_new_field form.description %}
-              
-
-              {% add_new_field form.city %}
-              {% add_new_field form.us_state %}
-              {% add_new_field form.country %}
+              {% add_field_modal form.year_established %}
+              {% add_field_modal form.country %}
+              {% add_field_modal form.us_state %}
+              {% add_field_modal form.city %}
             </div>
           </div>
     
@@ -96,7 +111,7 @@
               <div class="clearfix"></div>
             </div>
             <div class="panel-body">
-              {% add_new_field form.manufacturer "manufacturer-create" %}
+              {% add_field_modal form.manufacturer "manufacturer-create" %}
             </div>
           </div>
           
@@ -106,14 +121,7 @@
               <h2 class="panel-title">Distillery</h2>
             </div>
             <div class="panel-body">
-              {% add_new_field form.distillery "distillery-create" %}
-
-              <div class="field-wrapper">
-                <label class="field-label derived derived-label">Description:</label>
-                <div class="field-container">
-                  <p class="derived derived-field">{{ brand.distillery.description }}</p>
-                </div>
-              </div>
+              {% add_field_modal form.distillery "distillery-create" %}
 
               <div class="field-wrapper">
                 <label class="field-label derived derived-label">Location:</label>
@@ -127,6 +135,13 @@
                   </p>
                 </div>
               </div> 
+            
+              <div class="field-wrapper">
+                <label class="field-label derived derived-label description-label">Description:</label>
+                <div class="field-container">
+                  <p class="derived derived-field">{{ brand.distillery.description }}</p>
+                </div>
+              </div>
 
             </div>
           </div>

@@ -117,19 +117,21 @@ class ToDictMixin(object):
 # ----------------
 class UnitOfMeasure(models.Model):
     ''' Units used to measure ingredients in a recipe or glass '''
-    name = models.CharField(max_length=NAME_LENGTH_SHORT, unique=True)
-    plural = models.CharField(max_length=NAME_LENGTH_SHORT, unique=True)
+    display_name = models.CharField(max_length=NAME_LENGTH_SHORT, unique=True)
+    display_plural = models.CharField(max_length=NAME_LENGTH_SHORT, unique=True)
+
+    verbose_name = models.CharField(max_length=NAME_LENGTH_SHORT, unique=True)
+    verbose_plural = models.CharField(max_length=NAME_LENGTH_SHORT, unique=True)
 
     class Meta:
         verbose_name_plural = 'units of measure'
 
+    def __str__(self):
+        return self.verbose_name
+
 
 class Glassware(BaseObjectWithImage):
     ''' Type of glassware and other cups '''
-
-    # Volume
-    volume = models.DecimalField(decimal_places=2, max_digits=5)
-    unit = models.ForeignKey(UnitOfMeasure, related_name='glassware', null=True, on_delete=models.SET_NULL)
 
     class Meta:
         verbose_name_plural = 'glassware'
@@ -236,6 +238,15 @@ class Brand(ToDictMixin, BaseObjectWithImage):
 
     def __str__(self):
         return self.name
+
+
+class Source(BaseObjectWithImage):
+    ''' Generic container for books, blogs, people, etc. where recipes and other
+    information has been sourced from
+    '''
+
+    def get_absolute_url(self):
+        return reverse('source-detail', kwargs={'pk': self.pk})
 
 
 class CocktailCategory(BaseObjectWithImage):
@@ -349,7 +360,7 @@ class Cocktail(ToDictMixin, BaseObjectWithImage):
         return reverse('cocktail-detail', kwargs={'pk': self.pk})
 
 
-class Recipe(BaseObjectWithImage):
+class Recipe(models.Model):
     '''
     Recipe for a specific cocktail.
     Ideas:
@@ -362,11 +373,26 @@ class Recipe(BaseObjectWithImage):
       Shaking type (i.e. shaken, stirred, swizzled, whipped, etc.)
     '''
 
+    name = models.CharField(max_length=NAME_LENGTH_LONG, unique=True)
+    notes = models.TextField(default='', blank=True)
+    instructions = models.TextField(default='', blank=True)
+
     # Link to the cocktail object that this is a recipe for
     cocktail = models.ForeignKey(Cocktail, related_name='recipes', on_delete=models.CASCADE)
 
+    # Source
+    source = models.ForeignKey(Source, related_name='recipes', on_delete=models.CASCADE)
+
     # Glassware and hardware
-    glassware = models.ForeignKey(Glassware, related_name='recipes', null=True, on_delete=models.SET_NULL)
+    glassware = models.ForeignKey(
+        Glassware,
+        related_name='recipes',
+        blank=True,
+        null=True,
+        on_delete=models.SET_NULL)
+
+    def __str__(self):
+        return self.name
 
 
 class RecipeIngredient(models.Model):
