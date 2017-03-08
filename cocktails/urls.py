@@ -44,5 +44,5 @@ urlpatterns = [
     url(r'^ingredient_subcategory/new/$', ingredient_subcategory_edit, name='ingredient-subcategory-create'),
     url(r'^ingredient_subcategory/(?P<pk>\d+)/edit/$', ingredient_subcategory_edit, name='ingredient-subcategory-update'),
 
-    url(r'^favicon.ico$', favicon_view, name="favicon"),
+    url(r'favicon.ico$', favicon_view, name="favicon"),
 ]

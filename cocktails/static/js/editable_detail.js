@@ -37,7 +37,7 @@ var initialize = function()
 
     // Trigger change events on load
     $('#id_country').change();
-    $('#id_ingredient_class').change();
+    //$('#id_ingredient_class').change();
 };
 
 // Click handler for the submit button
@@ -128,16 +128,11 @@ var detailCancelHandler = function()
 
         // Copy original data from readonly elements back into editable ones
         $('.editable-field').each(copyFromReadonly);
+           
+        // Explicitly call the change handler for the class, which will cascade and
+        // update the category and subcategory 
+        copyCategorizationFromReadonly();
 
-        // This process will trigger the category fields to wipe themselves
-        // For now, we can manually re-assign the values
-        if ($('#readonly_subcategory').attr('data-pk') !== '')
-        {
-            $('#id_ingredient_category, #id_subcategory').prop('disabled', false);
-            $('#id_ingredient_category').val($('#readonly_ingredient_category').attr('data-pk'));
-            $('#id_subcategory').val($('#readonly_subcategory').attr('data-pk'));
-        }
-            
         // Clear any errors that were generated
         $('.field-errors').empty();
         $('.field-errors').removeClass('alert alert-danger');
@@ -180,6 +175,20 @@ var makeReadonly = function()
     $('#detail-image-edit').addClass('hide');
 };
 
+// The ingredient categories require special handling
+var copyCategorizationFromReadonly = function()
+{
+    var readonlyClass = $('#readonly_ingredient_class').attr('data-pk');
+    var readonlyCategory = $('#readonly_ingredient_category').attr('data-pk');
+    var readonlySubcategory = $('#readonly_subcategory').attr('data-pk');
+
+    $('id_ingredient_class').val(readonlyClass);
+    changeCategorizationOptions(readonlyClass, readonlyCategory, readonlySubcategory);
+
+    if (readonlyCategory) $('#id_ingredient_category').prop('disabled', false);
+    if (readonlySubcategory) $('#id_subcategory').prop('disabled', false);
+};
+
 // Applied to a field with the readonly-field class, this will find its
 // corresponding editable field and copy the value over to it
 var copyFromReadonly = function()
@@ -191,12 +200,12 @@ var copyFromReadonly = function()
     // For normal fields, we can just copy the text
     if (elementType === 'input' || elementType === 'textarea')
     {
-        $(id).val($(srcId).text()).change();
+        $(id).val($(srcId).text());
     }
     // For select fields, we need to copy the ID instead of the value 
     else if (elementType === 'select')
     {
-        $(id).val($(srcId).attr('data-pk')).change();
+        $(id).val($(srcId).attr('data-pk'));
     }
 };
 
@@ -243,32 +252,21 @@ var ingredientClassChange = function()
 {
     var ingredientClass = $(this).val();
 
+    // Clear and disable the subcategory field
+    $('#id_subcategory').val('');
+    $('#id_subcategory').prop('disabled', true);
+
     if (ingredientClass === "")
     {
-        // Clear and disable the category and subcategory fields
-        $('#id_ingredient_category, #id_subcategory').val('');
-        $('#id_ingredient_category, #id_subcategory').prop('disabled', true);
+        // Clear and disable the category field
+        $('#id_ingredient_category').val('');
+        $('#id_ingredient_category').prop('disabled', true);
     }
     else
     {
         // Enable the category field and get the list for this class
         $('#id_ingredient_category').prop('disabled', false);
-        $.ajax({
-            url: window.location.pathname,
-            data: {'filter_class': ingredientClass},
-
-            success: function(data) {
-                // Remove previous options and add the new ones
-                $('#id_ingredient_category option').remove();
-                for (var idx=0; idx < data.category_options.length; idx++)
-                {
-                    $('#id_ingredient_category').append($('<option>', {
-                        value: data.category_options[idx].value, 
-                        text: data.category_options[idx].text
-                    }));
-                }
-            },
-        });
+        changeCategorizationOptions(ingredientClass, null, null);
     }
 };
 
@@ -280,20 +278,41 @@ var ingredientCategoryChange = function()
 
     if (ingredientCategory === "")
     {
-        // Clear and disable the category and subcategory fields
+        // Clear and disable the subcategory field
         $('#id_subcategory').val('');
         $('#id_subcategory').prop('disabled', true);
     }
     else
     {
-        // Enable the category field and get the list for this class
+        // Enable the subcategory field and update the list
         $('#id_subcategory').prop('disabled', false);
-        $.ajax({
-            url: window.location.pathname,
-            data: {'filter_category': ingredientCategory},
+        changeCategorizationOptions(ingredientClass, ingredientCategory, null);
+    }
+};
 
-            success: function(data) {
-                // Remove previous options and add the new ones
+// Change the categorization options given a class and, optionally, a category. 
+// The values of filterCategory and setSubcategory will be set into their select fields
+var changeCategorizationOptions = function(filterClass, filterCategory, setSubcategory)
+{
+    $.ajax({
+        url: window.location.pathname,
+        data: {'filter_class': filterClass, 'filter_category': filterCategory},
+
+        success: function(data) {
+            // Update the category list
+            $('#id_ingredient_category option').remove();
+            for (var idx=0; idx < data.category_options.length; idx++)
+            {
+                $('#id_ingredient_category').append($('<option>', {
+                    value: data.category_options[idx].value, 
+                    text: data.category_options[idx].text
+                }));
+            }
+
+            // If a category was also passed, make sure to set it and update the subcategory list
+            if (filterCategory)
+            {
+                // Update the subcategory list
                 $('#id_subcategory option').remove();
                 for (idx=0; idx < data.subcategory_options.length; idx++)
                 {
@@ -302,34 +321,13 @@ var ingredientCategoryChange = function()
                         text: data.subcategory_options[idx].text
                     }));
                 }
-            },
-        });
-    }
-};
 
-var parseIngredientCategoryOptions = function(data)
-{
-    // Remove all previous options
-    $('#id_ingredient_category option').remove();
-    $('#id_subcategory option').remove();
-
-    // Add the category options
-    for (var idx=0; idx < data.category_options.length; idx++)
-    {
-        $('#id_ingredient_category').append($('<option>', {
-            value: data.category_options[idx].value, 
-            text: data.category_options[idx].text
-        }));
-    }
-
-    // Add the subcategory options
-    for (idx=0; idx < data.subcategory_options.length; idx++)
-    {
-        $('#id_subcategory').append($('<option>', {
-            value: data.subcategory_options[idx].value, 
-            text: data.subcategory_options[idx].text
-        }));
-    }
+                // Update values in both (if they are null the value will default to empty)
+                $('#id_ingredient_category').val(filterCategory);
+                $('#id_subcategory').val(setSubcategory);
+            }
+        },
+    });
 };
 
 // Add click handlers when the page loads

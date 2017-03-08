@@ -178,12 +178,12 @@ class IngredientDetail(JsonFormMixin, CreateUpdateMixin, UpdateView):
         response['category_options'] = [{'value': '', 'text': '---------'}]
         response['subcategory_options'] = [{'value': '', 'text': '---------'}]
 
-        if filter_class is not None:
+        if filter_class != '':
             cats = IngredientCategory.objects.filter(ingredient_class=filter_class).order_by('name')
             for cat in cats:
                 response['category_options'].append({'value': cat.pk, 'text': cat.name})
 
-        if filter_category is not None:
+        if filter_category != '':
             subcats = IngredientSubcategory.objects.filter(category=filter_category).order_by('name')
             for subcat in subcats:
                 response['subcategory_options'].append({'value': subcat.pk, 'text': subcat.name})
