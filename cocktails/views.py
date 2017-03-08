@@ -65,24 +65,8 @@ class JsonFormMixin(object):
         if request.is_ajax():
             return self.ajax_handler(request)
 
-        # If the GET request has parameters corresponding to model properties,
-        # we will try to preload the form with the correct value
         else:
-            self.object = self.get_object()
-            form_class = self.get_form_class()
-
-            if self.object is None:
-                # Grab any valid initial values from the GET params
-                initial = {}
-                for key, value in request.GET.items():
-                    if hasattr(self.model, key):
-                        initial[key] = value
-
-                form = form_class(initial=initial)
-            else:
-                form = self.get_form(form_class)
-
-            return self.render_to_response(self.get_context_data(form=form))
+            return super().get(request, *args, **kwargs)
 
     def form_valid(self, form):
         ''' Return a JSON response with the pk and a success message '''
@@ -120,6 +104,26 @@ class IngredientForeignKeyView(CreateUpdateMixin, PopupEditMixin, ShortDescripti
 class IngredientModalView(CreateUpdateMixin, ShortDescriptionMixin, JsonFormMixin, UpdateView):
     ''' Single class which handle the mixins using the modal edit form '''
     template_name = 'cocktails/modal_edit_form.html'
+
+    def ajax_handler(self, request):
+        ''' If the GET request has parameters corresponding to model properties,
+        we will try to preload the form with the correct value
+        '''
+        self.object = self.get_object()
+        form_class = self.get_form_class()
+
+        if self.object is None:
+            # Grab any valid initial values from the GET params
+            initial = {}
+            for key, value in request.GET.items():
+                if hasattr(self.model, key):
+                    initial[key] = value
+
+            form = form_class(initial=initial)
+        else:
+            form = self.get_form(form_class)
+
+        return self.render_to_response(self.get_context_data(form=form))
 
 
 # ---------
